@@ -3,10 +3,12 @@ import pygame
 
 # Import files
 from config import *
+from common import *
 
 # Import classes
 from map import Map
 from assets import Assets
+from operations import Operations
 
 # Main class
 class Main:
@@ -22,9 +24,11 @@ class Main:
 		self.running = True
 		self.clock = pygame.time.Clock()
 
-		# Instantiating classes
-		self.map = Map(self.screen)
-		self.assets = Assets(self.screen)
+		# Dict of panels
+		self.panels = {}
+		self.panels["map"] = Map(self.screen, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"])
+		self.panels["assets"] = Assets(self.screen, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"])
+		self.panels["operations"] = Assets(self.screen, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"])
 
 		# Call game loop
 		self.gameloop()
@@ -35,8 +39,15 @@ class Main:
 			if event.type == pygame.QUIT:
 				self.end()
 
-			# Map events
-			self.map.events(event)
+			# Panel events
+			for key in self.panels:
+				self.panels[key].panelEvents(event)
+				# Panel selected
+				if self.panels[key].hover:
+					if event.type == pygame.MOUSEBUTTONUP:
+						if mouseCollision(self.panels[key].xy, self.panels[key].wh, event.pos):
+							self.panels[key].selected = True
+				else: self.panels[key].selected = False
 
 	# Updating data
 	def update(self):
@@ -47,10 +58,16 @@ class Main:
 
 	# Rendering data
 	def render(self):
-		self.screen.fill(COLORS["BLACK"])
+		# Background color
+		self.screen.fill(COLORS["WHITE"])
 
-		# Rendering cells
-		self.map.drawCells(self.screen)
+		# Rendering panels
+		for key in self.panels:
+			if self.panels[key].visible:
+				self.panels[key].drawPanel()
+
+		# Rendering grid on map
+		self.panels["map"].drawGrid()
 
 		pygame.display.update()
 

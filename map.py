@@ -6,14 +6,14 @@ from config import *
 from common import *
 
 # Import classes
+from panel import Panel
 from cell import Cell
 
 # Class Map
-class Map:
+class Map(Panel):
 	# Constructor
-	def __init__(self, screen):
-		# Screen
-		self.screen = screen
+	def __init__(self, screen, xy, wh, color):
+		super().__init__(screen, xy, wh, color)
 
 		# Tile config
 		self.tile = {
@@ -35,36 +35,40 @@ class Map:
 
 		# Cells
 		self.cells = []
-		self.createCells()
+		# self.createCells()
 
-	# Handling events
-	def events(self, e):
-		# Cell Events
-		for cell in self.cells:
-			# Mouse events
-			# MOUSEMOTION
-			if e.type == pygame.MOUSEMOTION:
-				# Checking mouse hover over a cell
-				if(mouseCollision(cell.xy, cell.wh, e.pos)):
-					cell.hover = True
-				else: cell.hover = False
-			# MOUSEBUTTONDOWN
-			if e.type == pygame.MOUSEBUTTONDOWN:
-				# Left mouse button
-				if e.button == 1:
-					# Checking mouse click over a cell
-					if(mouseCollision(cell.xy, cell.wh, e.pos)):
-						cell.click = True
-					else: cell.click = False
+	# Draw grid
+	def drawGrid(self):
+		pass
 
-	# Create cells
-	def createCells(self):
-		for x in range(self.grid["startpos"][0], self.grid["width"], self.tile["size"]):
-			for y in range(self.grid["startpos"][1], self.grid["height"], self.tile["size"]):
-				cell = Cell((x,y), self.tile["size"], COLORS["WHITE"])
-				self.cells.append(cell)
+	# # Handling events
+	# def events(self, e):
+	# 	# Cell Events
+	# 	for cell in self.cells:
+	# 		# Mouse events
+	# 		# MOUSEMOTION
+	# 		if e.type == pygame.MOUSEMOTION:
+	# 			# Checking mouse hover over a cell
+	# 			if(mouseCollision(cell.xy, cell.wh, e.pos)):
+	# 				cell.hover = True
+	# 			else: cell.hover = False
+	# 		# MOUSEBUTTONDOWN
+	# 		if e.type == pygame.MOUSEBUTTONDOWN:
+	# 			# Left mouse button
+	# 			if e.button == 1:
+	# 				# Checking mouse click over a cell
+	# 				if(mouseCollision(cell.xy, cell.wh, e.pos)):
+	# 					cell.click = True
+	# 				else: cell.click = False
 
-	# Draw cells
-	def drawCells(self, screen):
-		for cell in self.cells:
-			cell.draw(self.screen)
+	# # Create cells
+	# def createCells(self):
+	# 	for x in range(self.grid["startpos"][0], self.grid["width"], self.tile["size"]):
+	# 		for y in range(self.grid["startpos"][1], self.grid["height"], self.tile["size"]):
+	# 			cell = Cell((x,y), self.tile["size"], COLORS["WHITE"])
+	# 			self.cells.append(cell)
+
+	# # Draw cells
+	# def drawCells(self, screen):
+	# 	for cell in self.cells:
+	# 		cell.draw(self.screen)
