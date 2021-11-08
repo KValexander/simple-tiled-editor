@@ -38,20 +38,19 @@ class Map(Panel):
 		self.camera["wh"] = self.wh
 		self.camera["direction"] = 0
 		self.camera["coefficient"] = 2.5
+		self.camera["acceleration"] = 10
+		self.camera["rewind"] = self.camera["coefficient"]
 
 	# Set camera indent
 	def setCameraIndent(self):
-		if(self.tile["scale"] >= 10): self.camera["coefficient"] = 2.5
-		elif(self.tile["scale"] < 10 and self.tile["scale"] >= 5): self.camera["coefficient"] = 3.5
-		elif(self.tile["scale"] < 5): self.camera["coefficient"] = 5.5
-		self.camera["indent"] = self.tile["size"] * self.camera["coefficient"]
+		self.camera["indent"] = self.tile["size"] * self.camera["rewind"]
 
 	# Set tile
 	def setTile(self):
 		self.tile["original_size"] = 4
 		self.tile["scale"] = 8
-		self.tile["cellX"] = 10
-		self.tile["cellY"] = 10
+		self.tile["cellX"] = 100
+		self.tile["cellY"] = 100
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
 		self.setTileSize(self.tile["scale"])
 
@@ -69,15 +68,20 @@ class Map(Panel):
 
 	# Set grid position
 	def setGridPos(self):
-		self.grid["startX"] = (int)(self.camera["wh"][0] / 2 - self.grid["width"] / 2)
-		self.grid["startY"] = (int)(self.camera["wh"][1] / 2 - self.grid["height"] / 2)
-		self.grid["condX"] = (int)(self.grid["width"] + self.grid["startX"])
-		self.grid["condY"] = (int)(self.grid["height"] + self.grid["startY"])
+		self.grid["startX"] = int(self.camera["wh"][0] / 2 - self.grid["width"] / 2)
+		self.grid["startY"] = int(self.camera["wh"][1] / 2 - self.grid["height"] / 2)
+		self.grid["condX"] = int(self.grid["width"] + self.grid["startX"])
+		self.grid["condY"] = int(self.grid["height"] + self.grid["startY"])
+		self.grid["startXY"] = (self.grid["startX"], self.grid["startY"])
+		self.grid["condXY"] = self.grid["condX"], self.grid["condY"]
 
 	# Coercing a position to a grid
 	def toGridSize(self, xy):
-		x = int(xy[0] / self.tile["size"]) * self.tile["size"]
-		y = int(xy[1] / self.tile["size"]) * self.tile["size"]
+		xy = (xy[0] - self.grid["startX"], xy[1] - self.grid["startY"])
+		x = (int(xy[0] / self.tile["size"]) * self.tile["size"]) + self.grid["startX"]
+		y = (int(xy[1] / self.tile["size"]) * self.tile["size"]) + self.grid["startY"]
+		if(xy[0] < 0): x -= self.tile["size"]
+		if(xy[1] < 0): y -= self.tile["size"]
 		return (x, y)
 
 	# Camera moving
@@ -99,20 +103,25 @@ class Map(Panel):
 
 		self.camera["direction"] = 0
 		self.camera["wh"] = move
-		self.setGridPos()
-
-	# Map scale
-	def mapScale(self, scale):
-		self.setTileSize(scale)
-		self.setGrid()
-		self.setCameraIndent()
 
 	# Handling events
 	def events(self, e):
+		# MOUSEMOTION
+		if e.type == pygame.MOUSEMOTION:
+			# Highlight color
+			if self.hover:
+				if mouseCollision(self.grid["startXY"], self.grid["size"], self.mxy):
+					self.highlight.fill((0, 128, 0))
+				else: self.highlight.fill((128, 0, 0))
+
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
 			if self.selected:
 				scale = self.tile["scale"]
+
+				# Rewind acceleration
+				if self.keys["shift"]: self.camera["rewind"] = self.camera["coefficient"] * self.camera["acceleration"]
+				else: self.camera["rewind"] = self.camera["coefficient"]
 
 				# Scroll up
 				if e.button == 4:
@@ -131,8 +140,14 @@ class Map(Panel):
 				# Scale check
 				if scale <= 0: scale = 1
 
-				if self.keys["ctrl"] and not self.keys["alt"]: self.mapScale(scale)
+				# Resizing the grid
+				if self.keys["ctrl"] and not self.keys["alt"]: self.setTileSize(scale)
+				# Moving the camera
 				else: self.cameraMove()
+
+				# Common Methods
+				self.setCameraIndent()
+				self.setGrid()
 
 	# Rendering data
 	def render(self):
