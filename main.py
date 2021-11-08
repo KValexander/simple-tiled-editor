@@ -25,10 +25,13 @@ class Main:
 		self.clock = pygame.time.Clock()
 
 		# Dict of panels
-		self.panels = {}
-		self.panels["map"] = Map(self.screen, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"])
-		self.panels["assets"] = Assets(self.screen, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"])
-		self.panels["operations"] = Assets(self.screen, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"])
+		self.panels = []
+		# Panel Map
+		self.panels.append(Map(self.screen, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
+		# Panel Assets
+		self.panels.append(Assets(self.screen, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
+		# Panel Operations
+		self.panels.append(Operations(self.screen, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
 
 		# Call game loop
 		self.gameloop()
@@ -40,19 +43,26 @@ class Main:
 				self.end()
 
 			# Panel events
-			for key in self.panels:
-				self.panels[key].panelEvents(event)
-				# Panel selected
-				if self.panels[key].hover:
-					if event.type == pygame.MOUSEBUTTONUP:
-						if mouseCollision(self.panels[key].xy, self.panels[key].wh, event.pos):
-							self.panels[key].selected = True
-				else: self.panels[key].selected = False
+			for panel in self.panels:
+				if not panel.disabled:
+					panel.panelEvents(event)
+					# Panel selected
+					if panel.hover:
+						if event.type == pygame.MOUSEBUTTONDOWN:
+							if mouseCollision(panel.xy, panel.wh, event.pos):
+								panel.selected = True
+					else: panel.selected = False
 
 	# Updating data
 	def update(self):
 		# Frame rendering speed
 		self.clock.tick(FPS)
+
+		# Updating panels
+		for panel in self.panels:
+			if not panel.disabled:
+				panel.updatePanel()
+
 		# Handling events
 		self.events()
 
@@ -62,12 +72,9 @@ class Main:
 		self.screen.fill(COLORS["WHITE"])
 
 		# Rendering panels
-		for key in self.panels:
-			if self.panels[key].visible:
-				self.panels[key].drawPanel()
-
-		# Rendering grid on map
-		self.panels["map"].drawGrid()
+		for panel in self.panels:
+			if not panel.disabled:
+				panel.renderPanel()
 
 		pygame.display.update()
 
@@ -81,5 +88,7 @@ class Main:
 	def end(self):
 		self.running = False
 
-main = Main()
-pygame.quit()
+# Start app
+if __name__ == "__main__":
+	main = Main()
+	pygame.quit()

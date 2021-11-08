@@ -15,33 +15,53 @@ class Panel:
 	def __init__(self, screen, xy, wh, color):
 		# Custom variables
 		self.screen = screen
-		self.x = xy[0]
-		self.y = xy[1]
-		self.xy = (self.x, self.y)
-		self.width = wh[0]
-		self.height = wh[1]
-		self.wh = (self.width, self.height)
+		self.xy = xy
+		self.wh = wh
 		self.color = color
 
 		# Boolean variables
-		self.visible = True;
+		self.disabled = False;
 		self.hover = False;
 		self.click = False;
 		self.selected = False;
+
+		# Keys
+		self.keys = {
+			"alt": False,
+			"ctrl": False,
+			"shift": False
+		}
 
 		# Default variables
 		self.panel = pygame.Surface(self.wh)
 		self.panel.fill(self.color)
 
-	# Mouse events
+	# Panel events
 	def panelEvents(self, e):
+		# If panel is selected
+		if self.selected:
+			# KEYPRESSED
+			pressed = pygame.key.get_pressed()
+			# ALT
+			if pressed[pygame.K_LALT] or pressed[pygame.K_RALT]:
+				self.keys["alt"] = True
+			else: self.keys["alt"] = False
+			# CTRL
+			if pressed[pygame.K_LCTRL] or pressed[pygame.K_RCTRL]:
+				self.keys["ctrl"] = True
+			else: self.keys["ctrl"] = False
+			# SHIFT
+			if pressed[pygame.K_LSHIFT] or pressed[pygame.K_RSHIFT]:
+				self.keys["shift"] = True
+			else: self.keys["shift"] = False
+
 		# MOUSEMOTION
 		if e.type == pygame.MOUSEMOTION:
 			if mouseCollision(self.xy, self.wh, e.pos):
 				self.hover = True
 			else: self.hover = False
 
-		# If mouse in area
+		# If mouse in panel
 		if self.hover:
 			# MOUSEBUTTONDOWN
 			if e.type == pygame.MOUSEBUTTONDOWN:
@@ -52,6 +72,29 @@ class Panel:
 			if e.type == pygame.MOUSEBUTTONUP:
 				self.click = False
 
-	# Rendering area
-	def drawPanel(self):
+		# Child class events
+		self.events(e)
+
+	# Updating panel
+	def updatePanel(self):
+		# Child class updating
+		self.update()
+
+	# Rendering panel
+	def renderPanel(self):
 		self.screen.blit(self.panel, self.xy)
+
+		# Child class rendering
+		self.render()
+
+	# Handling events
+	def events(self, e):
+		pass
+
+	# Updating data on panel
+	def update(self):
+		pass
+
+	# Rendering data on panel
+	def render(self):
+		pass
