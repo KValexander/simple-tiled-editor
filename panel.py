@@ -35,10 +35,12 @@ class Panel:
 		# Default variables
 		self.panel = pygame.Surface(self.wh)
 		self.panel.fill(self.color)
+		# Mouse position on the panel
+		self.mxy = pygame.mouse.get_pos()
 
 	# Panel events
 	def panelEvents(self, e):
-		# If panel is selected
+		# If the panel is selected
 		if self.selected:
 			# KEYPRESSED
 			pressed = pygame.key.get_pressed()
@@ -57,11 +59,14 @@ class Panel:
 
 		# MOUSEMOTION
 		if e.type == pygame.MOUSEMOTION:
+			# Mouse position on the panel
+			self.mxy = (int(e.pos[0] - self.xy[0]), int(e.pos[1] - self.xy[1]))
+			# Panel targeting check
 			if mouseCollision(self.xy, self.wh, e.pos):
 				self.hover = True
 			else: self.hover = False
 
-		# If mouse in panel
+		# If the mouse is on the panel
 		if self.hover:
 			# MOUSEBUTTONDOWN
 			if e.type == pygame.MOUSEBUTTONDOWN:
