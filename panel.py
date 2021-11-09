@@ -83,7 +83,7 @@ class Panel:
 				self.actionBar["hover"] = True
 			else: self.actionBar["hover"] = False
 
-			# Check not selected and and click
+			# Check not selected or and click
 			if not self.selected or not self.click: self.move = False
 
 			# Moving the panel
@@ -92,21 +92,20 @@ class Panel:
 
 		# If the mouse is on the panel
 		if self.hover:
-
 			# MOUSEBUTTONDOWN
 			if e.type == pygame.MOUSEBUTTONDOWN:
 				# Click on the panel
 				if mouseCollision(self.xy, self.wh, e.pos):
 					self.click = True
-					# 
+					# Check move state
 					if self.actionBar["hover"]:
 						if(self.actionBar["clickPos"][0] == 0 and self.actionBar["clickPos"][1] == 0): self.actionBar["clickPos"] = self.mxy
 						if(self.actionBar["clickPos"][0] != 0 and self.actionBar["clickPos"][1] != 0): self.move = True
 
-		# MOUSEBUTTONUP
-		if e.type == pygame.MOUSEBUTTONUP:
-			self.click = False
-			self.actionBar["clickPos"] = (0, 0)
+			# MOUSEBUTTONUP
+			if e.type == pygame.MOUSEBUTTONUP:
+				self.click = False
+				self.actionBar["clickPos"] = (0, 0)
 
 		# Child class method
 		self.events(e)

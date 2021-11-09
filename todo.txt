@@ -4,13 +4,13 @@
 - Abstract class Panel
 
 - Panel:
-	- Move the panel
-	- Resizable the panel
-	- Collapse the panel
-	- Close the panel
+	- Move
+	- Resizable
+	- Collapse
+	- Close
 
 - Screen:
-
+	...
 
 - Start Screen
 - Project screen

@@ -33,8 +33,8 @@ class Main:
 		# Panel Assets
 		self.panels.append(Assets(self.window, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
 
-		# Render list
-		self.renderList = []
+		# Buffer list
+		self.bufferList = []
 
 		# Selected panel number
 		self.panelSelected = 0
@@ -68,6 +68,19 @@ class Main:
 		# Frame rendering speed
 		self.clock.tick(FPS)
 
+		# Sorting the list of panels
+		for i, panel in enumerate(self.panels, 1):
+			if self.panelSelected != i:
+				self.bufferList.append(panel)
+		if self.panelSelected != 0: self.bufferList.append(self.panels[self.panelSelected-1])
+
+		# Passing sorted data
+		self.panels = self.bufferList.copy()
+		self.panelSelected = len(self.bufferList)
+
+		# Clear buffer list
+		self.bufferList.clear()
+
 		# Updating panels
 		for panel in self.panels:
 			if not panel.disabled:
@@ -80,17 +93,6 @@ class Main:
 	def render(self):
 		# Background color
 		self.window.fill(COLORS["BACKGROUND"])
-
-		# Render list compilation
-		for i, panel in enumerate(self.panels, 1):
-			if self.panelSelected != i:
-				self.renderList.append(panel)
-		if self.panelSelected != 0: self.renderList.append(self.panels[self.panelSelected-1])
-
-		self.panels = self.renderList.copy()
-		self.panelSelected = len(self.renderList)
-
-		self.renderList.clear()
 
 		# Rendering panels
 		for panel in self.panels:
