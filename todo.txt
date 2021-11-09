@@ -1,13 +1,15 @@
 - Main class
-- Action Bar
+- Action bar
 - Abstract class Screen
 - Abstract class Panel
 
 - Panel:
+	- Action bar
 	- Move
 	- Resizable
 	- Collapse
 	- Close
+	- Name
 
 - Screen:
 	...

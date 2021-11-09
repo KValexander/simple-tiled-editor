@@ -1,5 +1,6 @@
 # Import libraries
 import pygame
+from pygame.locals import *
 
 # Import files
 from config import *
@@ -17,8 +18,12 @@ class Main:
 		pygame.init();
 
 		# Window
-		self.window = pygame.display.set_mode(SIZE)
+		self.window = pygame.display.set_mode(SIZE, RESIZABLE)
 		pygame.display.set_caption("Simple tiled editor")
+
+		# Window icon
+		icon = loadImage("gui/icon.ico")
+		pygame.display.set_icon(icon)
 
 		# Loop variables
 		self.running = True
@@ -27,11 +32,11 @@ class Main:
 		# Panel List
 		self.panels = []
 		# Panel Map
-		self.panels.append(Map(self.window, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
+		self.panels.append(Map(self.window, "Map", (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
 		# Panel Operations
-		self.panels.append(Operations(self.window, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
+		self.panels.append(Operations(self.window, "Operations", (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
 		# Panel Assets
-		self.panels.append(Assets(self.window, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
+		self.panels.append(Assets(self.window, "Assets", (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
 
 		# Buffer list
 		self.bufferList = []
@@ -39,8 +44,8 @@ class Main:
 		# Selected panel number
 		self.panelSelected = 0
 
-		# Call game loop
-		self.gameloop()
+		# Run game loop
+		self.run()
 
 	# Handling events
 	def events(self):
@@ -77,6 +82,7 @@ class Main:
 		# Passing sorted data
 		self.panels = self.bufferList.copy()
 		self.panelSelected = len(self.bufferList)
+		self.panels[self.panelSelected-1].selected = True
 
 		# Clear buffer list
 		self.bufferList.clear()
@@ -102,7 +108,7 @@ class Main:
 		pygame.display.update()
 
 	# Game loop
-	def gameloop(self):
+	def run(self):
 		while self.running:
 			self.update()
 			self.render()

@@ -11,8 +11,8 @@ from panel import Panel
 # Class Map
 class Map(Panel):
 	# Constructor
-	def __init__(self, screen, xy, wh, color):
-		super().__init__(screen, xy, wh, color)
+	def __init__(self, screen, name, xy, wh, color):
+		super().__init__(screen, name, xy, wh, color)
 
 		# Camera config
 		self.camera = {}
