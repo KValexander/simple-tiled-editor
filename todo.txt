@@ -1,0 +1,26 @@
+- Main class
+- Action Bar
+- Abstract class Screen
+- Abstract class Panel
+
+- Panel:
+	- Move the panel
+	- Resizable the panel
+	- Collapse the panel
+	- Close the panel
+
+- Screen:
+
+
+- Start Screen
+- Project screen
+
+- Start Screen:
+	- List projects panel
+	- Start panel
+
+- Project screen:
+	- Assets panel
+	- Map panel
+	- Operations panel
+

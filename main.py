@@ -17,21 +17,27 @@ class Main:
 		pygame.init();
 
 		# Window
-		self.screen = pygame.display.set_mode(SIZE)
+		self.window = pygame.display.set_mode(SIZE)
 		pygame.display.set_caption("Simple tiled editor")
 
 		# Loop variables
 		self.running = True
 		self.clock = pygame.time.Clock()
 
-		# Dict of panels
+		# Panel List
 		self.panels = []
 		# Panel Map
-		self.panels.append(Map(self.screen, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
-		# Panel Assets
-		self.panels.append(Assets(self.screen, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
+		self.panels.append(Map(self.window, (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
 		# Panel Operations
-		self.panels.append(Operations(self.screen, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
+		self.panels.append(Operations(self.window, (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
+		# Panel Assets
+		self.panels.append(Assets(self.window, (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
+
+		# Render list
+		self.renderList = []
+
+		# Selected panel number
+		self.panelSelected = 0
 
 		# Call game loop
 		self.gameloop()
@@ -43,15 +49,19 @@ class Main:
 				self.end()
 
 			# Panel events
-			for panel in self.panels:
+			for i, panel in enumerate(self.panels, 1):
+				# If the panel is not disabled
 				if not panel.disabled:
 					panel.panelEvents(event)
-					# Panel selected
-					if panel.hover:
-						if event.type == pygame.MOUSEBUTTONDOWN:
+					# MOUSEBUTTONDOWN
+					if event.type == pygame.MOUSEBUTTONDOWN:
+						# If panel not selected
+						if self.panelSelected != i:
 							if mouseCollision(panel.xy, panel.wh, event.pos):
+								for pnl in self.panels:
+									pnl.selected = False
 								panel.selected = True
-					else: panel.selected = False
+								self.panelSelected = i
 
 	# Updating data
 	def update(self):
@@ -69,7 +79,18 @@ class Main:
 	# Rendering data
 	def render(self):
 		# Background color
-		self.screen.fill(COLORS["WHITE"])
+		self.window.fill(COLORS["BACKGROUND"])
+
+		# Render list compilation
+		for i, panel in enumerate(self.panels, 1):
+			if self.panelSelected != i:
+				self.renderList.append(panel)
+		if self.panelSelected != 0: self.renderList.append(self.panels[self.panelSelected-1])
+
+		self.panels = self.renderList.copy()
+		self.panelSelected = len(self.renderList)
+
+		self.renderList.clear()
 
 		# Rendering panels
 		for panel in self.panels:

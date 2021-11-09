@@ -7,7 +7,6 @@ from common import *
 
 # Import classes
 from panel import Panel
-from cell import Cell
 
 # Class Map
 class Map(Panel):
@@ -47,17 +46,17 @@ class Map(Panel):
 
 	# Set tile
 	def setTile(self):
-		self.tile["original_size"] = 4
+		self.tile["originalSize"] = 4
 		self.tile["scale"] = 8
-		self.tile["cellX"] = 100
-		self.tile["cellY"] = 100
+		self.tile["cellX"] = 10
+		self.tile["cellY"] = 10
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
 		self.setTileSize(self.tile["scale"])
 
 	# Set tile size
 	def setTileSize(self, scale):
 		self.tile["scale"] = scale
-		self.tile["size"] = self.tile["original_size"] * self.tile["scale"]
+		self.tile["size"] = self.tile["originalSize"] * self.tile["scale"]
 
 	# Set grid
 	def setGrid(self):
@@ -108,15 +107,17 @@ class Map(Panel):
 	def events(self, e):
 		# MOUSEMOTION
 		if e.type == pygame.MOUSEMOTION:
-			# Highlight color
-			if self.hover:
+			# Check hover and not action bar hover
+			if self.hover and not self.actionBar["hover"]:
+				# Highlight color
 				if mouseCollision(self.grid["startXY"], self.grid["size"], self.mxy):
 					self.highlight.fill((0, 128, 0))
 				else: self.highlight.fill((128, 0, 0))
 
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
-			if self.selected:
+			# Check selected and not action bar hover
+			if self.selected and not self.actionBar["hover"]:
 				scale = self.tile["scale"]
 
 				# Rewind acceleration
@@ -149,13 +150,14 @@ class Map(Panel):
 				self.setCameraIndent()
 				self.setGrid()
 
+
 	# Rendering data
 	def render(self):
 		# Background color
 		self.panel.fill(self.color)
 
 		# Render highlight surface
-		if self.hover:
+		if self.hover and not self.actionBar["hover"]:
 			self.panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize((self.mxy[0], self.mxy[1])))
 
 		# Draw grid
