@@ -13,7 +13,7 @@ COLORS = {
 }
 
 # Screen size
-SIZE = (1024, 768)
+SIZE = (1366 , 768)
 FULLSIZE = False
 
 # FPS

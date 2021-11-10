@@ -107,7 +107,7 @@ class Map(Panel):
 	def events(self, e):
 		# MOUSEMOTION
 		if e.type == pygame.MOUSEMOTION:
-			# Check hover and not action bar hover
+			# Check hover and not hover on action bar
 			if self.hover and not self.actionBar["hover"]:
 				# Highlight color
 				if mouseCollision(self.grid["startXY"], self.grid["size"], self.mxy):
@@ -116,7 +116,7 @@ class Map(Panel):
 
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
-			# Check selected and not action bar hover
+			# Check selected and not hover on action bar
 			if self.selected and not self.actionBar["hover"]:
 				scale = self.tile["scale"]
 

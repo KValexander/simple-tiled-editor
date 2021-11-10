@@ -1,15 +1,16 @@
-- Main class
+- Main class (✔)
 - Action bar
 - Abstract class Screen
-- Abstract class Panel
+- Abstract class Panel (✔)
+- Abstract class Template
 
-- Panel:
-	- Action bar
-	- Move
-	- Resizable
-	- Hide
-	- Close
-	- Name
+- Panel: (✔)
+	- Action bar (✔)
+	- Move (✔)
+	- Resizable (✔)
+	- Hide (✔)
+	- Close(✔)
+	- Name(✔)
 
 - Screen:
 	...

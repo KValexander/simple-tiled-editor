@@ -62,7 +62,9 @@ class Main:
 					if event.type == pygame.MOUSEBUTTONDOWN:
 						# If panel not selected
 						if self.panelSelected != i:
-							if mouseCollision(panel.xy, panel.wh, event.pos):
+							wh = panel.wh
+							if panel.hide: wh = [wh[0], panel.actionBar["height"]]
+							if mouseCollision(panel.xy, wh, event.pos):
 								for pnl in self.panels:
 									pnl.selected = False
 								panel.selected = True
@@ -75,9 +77,8 @@ class Main:
 
 		# Sorting the list of panels
 		for i, panel in enumerate(self.panels, 1):
-			if not panel.disabled:
-				if self.panelSelected != i:
-					self.bufferList.append(panel)
+			if self.panelSelected != i:
+				self.bufferList.append(panel)
 		if self.panelSelected != 0: self.bufferList.append(self.panels[self.panelSelected-1])
 
 		# Passing sorted data
@@ -90,7 +91,8 @@ class Main:
 
 		# Updating panels
 		for panel in self.panels:
-			panel.updatePanel()
+			if not panel.disabled:
+				panel.updatePanel()
 
 		# Handling events
 		self.events()
@@ -102,7 +104,8 @@ class Main:
 
 		# Rendering panels
 		for panel in self.panels:
-			panel.renderPanel()
+			if not panel.disabled:
+				panel.renderPanel()
 
 		pygame.display.update()
 
