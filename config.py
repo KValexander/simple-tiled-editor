@@ -8,8 +8,8 @@ COLORS = {
 	"GRAY": (128, 128, 128),
 	"TAUPEGRAY": (137, 137, 137),
 	"SPANISHGRAY": (153, 153, 153),
-	"ACTIONBAR": (114, 114, 114),
-	"BORDER": (100, 100, 100)
+	"BORDER": (85, 85, 85),
+	"BORDERSELECTED": (100, 100, 100),
 }
 
 # Screen size

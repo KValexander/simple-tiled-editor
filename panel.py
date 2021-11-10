@@ -12,8 +12,8 @@ class Panel:
 		# Custom variables
 		self.screen = screen
 		self.name = name
-		self.xy = xy
-		self.wh = (int(wh[0]), int(wh[1]))
+		self.xy = [int(xy[0]), int(xy[1])]
+		self.wh = [int(wh[0]), int(wh[1])]
 		self.color = color
 
 		# Boolean variables
@@ -37,11 +37,11 @@ class Panel:
 		self.panel.fill(self.color)
 		# Border
 		self.border = {
-			"size": 5,
-			"hover": False,
-			"rect": pygame.Rect(self.xy, self.wh),
+			"size": 4,
 			"direction": 0,
-			"cursor": pygame.SYSTEM_CURSOR_ARROW
+			"color": COLORS["BORDER"],
+			"rect": pygame.Rect(self.xy, self.wh),
+			"cursor": pygame.SYSTEM_CURSOR_ARROW,
 		}
 
 		# Action bar
@@ -50,11 +50,13 @@ class Panel:
 			"xy": self.xy,
 			"hover": False,
 			"clickPos": (0, 0),
+			"hide": scLoadImage("gui/hide.png", (12, 12)),
+			"close": scLoadImage("gui/close.png", (12, 12)),
 			"font": pygame.font.Font("gui/Montserrat-Light.ttf", 12),
 		}
 		self.actionBar["wh"] = (self.wh[0], self.actionBar["height"])
 		self.actionBar["surface"] = pygame.Surface(self.actionBar["wh"])
-		self.actionBar["surface"].fill(COLORS["BORDER"])
+		self.actionBar["surface"].fill(self.border["color"])
 		self.actionBar["name"] = self.actionBar["font"].render(str(self.name), True, COLORS["WHITE"])
 
 		# Mouse position on the panel
@@ -91,7 +93,6 @@ class Panel:
 
 			# Check not selected or and click
 			if not self.selected or not self.click:
-				self.border["direction"] = 0
 				self.resize = False
 				self.move = False
 
@@ -113,9 +114,8 @@ class Panel:
 					# Mouse coordinates while clicking
 					if (self.clickPos[0] == 0 and self.clickPos[1] == 0):
 						self.clickPos = self.mxy
-					# Chech resize state
-					# Check move state
-					if self.border["hover"]:
+					# Chech resize state and Check move state
+					if self.border["direction"] != 0:
 						self.resize = True
 					elif self.actionBar["hover"]:
 						if(self.actionBar["clickPos"][0] == 0 and self.actionBar["clickPos"][1] == 0):
@@ -128,11 +128,11 @@ class Panel:
 			self.click = False
 			self.resize = False
 			self.clickPos = (0,0)
-			self.border["direction"] = 0
 			self.actionBar["clickPos"] = (0, 0)
 
-		# Child class method
-		self.events(e)
+		if not self.hide:
+			# Child class method
+			self.events(e)
 
 	# Check mousemotion collision
 	def checkMousemotionCollision(self, pos):
@@ -148,24 +148,32 @@ class Panel:
 
 		# Hover to the edge of the panel
 		if borderCollision(self.xy, self.wh, pos, self.border["size"]):
-			self.border["hover"] = True
-
 			# Determining the direction of the edge
 			if self.border["direction"] == 0:
+				# LEFT UP
+				if (self.mxy[0] >= 0 and self.mxy[0] <= self.border["size"] and
+					self.mxy[1] >= 0 and self.mxy[1] <= self.border["size"]):
+						self.border["direction"] = 5
+						self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZENWSE
+				# RIGHT DOWN
+				elif(self.mxy[0] >= self.wh[0] - self.border["size"] and self.mxy[0] <= self.wh[0] and
+					self.mxy[1] >= self.wh[1] - self.border["size"] and self.mxy[1] <= self.wh[1]):
+						self.border["direction"] = 6
+						self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZEALL
 				# UP
-				if(self.mxy[1] >= 1 and self.mxy[1] <= self.border["size"]):
+				elif(self.mxy[1] >= 0 and self.mxy[1] <= self.border["size"]):
 					self.border["direction"] = 1
 					self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZENS
 				# RIGHT
-				elif(self.mxy[0] >= self.wh[0] - self.border["size"] and self.mxy[0] <= self.wh[0] - 1):
+				elif(self.mxy[0] >= self.wh[0] - self.border["size"] and self.mxy[0] <= self.wh[0]):
 					self.border["direction"] = 2
 					self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZEWE
 				# DOWN
-				elif(self.mxy[1] >= self.wh[1] - self.border["size"] and self.mxy[1] <= self.wh[1] - 1):
+				elif(self.mxy[1] >= self.wh[1] - self.border["size"] and self.mxy[1] <= self.wh[1]):
 					self.border["direction"] = 3
 					self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZENS
 				# LEFT
-				elif(self.mxy[0] >= 1 and self.mxy[0] <= self.border["size"]):
+				elif(self.mxy[0] >= 0 and self.mxy[0] <= self.border["size"]):
 					self.border["direction"] = 4
 					self.border["cursor"] = pygame.SYSTEM_CURSOR_SIZEWE
 				# ELSE
@@ -175,7 +183,7 @@ class Panel:
 
 			pygame.mouse.set_system_cursor(self.border["cursor"])
 		else:
-			self.border["hover"] = False
+			if not self.resize: self.border["direction"] = 0
 			pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
 
@@ -185,7 +193,8 @@ class Panel:
 		differenceX = self.actionBar["clickPos"][0] - self.mxy[0]
 		differenceY = self.actionBar["clickPos"][1] - self.mxy[1]
 		# Subtracting the difference from the current coordinates
-		self.xy = (self.xy[0] - differenceX, self.xy[1] - differenceY)
+		self.xy[0] -= differenceX
+		self.xy[1] -= differenceY
 		self.actionBar["xy"] = self.xy
 		self.border["rect"].x = self.xy[0]
 		self.border["rect"].y = self.xy[1]
@@ -195,31 +204,37 @@ class Panel:
 		# Finding the coordinate difference
 		differenceX = self.mxy[0] - self.clickPos[0]
 		differenceY = self.mxy[1] - self.clickPos[1]
-		xy, wh = self.xy, self.wh
-		print(self.border["direction"])
+		xy, wh = self.xy.copy(), self.wh.copy()
 
-		# !!!??? What is the problem here? I do not understand ???!!!
-
-		# UP Correct
-		if self.border["direction"] == 1:
-			xy = [xy[0], xy[1] + differenceY]
-			wh = [wh[0], wh[1] - differenceY]
-		# RIGHT NOT CORRECT
+		# LEFT UP
+		if self.border["direction"] == 5:
+			xy[0] += differenceY
+			xy[1] += differenceY
+			wh[0] -= differenceY
+			wh[1] -= differenceY
+		# RIGHT DOWN
+		elif self.border["direction"] == 6:
+			wh[0] = self.mxy[0]
+			wh[1] = self.mxy[1]
+		# UP
+		elif self.border["direction"] == 1:
+			xy[1] += differenceY
+			wh[1] -= differenceY
+		# RIGHT
 		elif self.border["direction"] == 2:
-			xy = [xy[0], xy[1]]
-			wh = [wh[0] + differenceX, wh[1]]
-		# DOWN NOT CORRECT
+			wh[0] = self.mxy[0]
+		# DOWN
 		elif self.border["direction"] == 3:
-			xy = [xy[0], xy[1]]
-			wh = [wh[0], wh[1] + differenceY]
-		# LEFT Correct
+			wh[1] = self.mxy[1]
+		# LEFT
 		elif self.border["direction"] == 4:
-			xy = [xy[0] + differenceX, xy[1]]
-			wh = [wh[0] - differenceX, wh[1]]
+			xy[0] += differenceX
+			wh[0] -= differenceX
 
 		# Check wh for scale
-		if(wh[0] <= 100): return
-		if(wh[1] <= self.actionBar["height"] + 10): return
+		if(	wh[0] <= 100 or
+			wh[1] <= self.actionBar["height"] + 10
+			): return 
 
 		# Resizible
 		self.xy = xy
@@ -232,23 +247,44 @@ class Panel:
 
 	# Updating the panel
 	def updatePanel(self):
-		# Child class method
-		self.update()
+		if not self.hide:
+			# Child class method
+			self.update()
 
 	# Rendering the panel
 	def renderPanel(self):
 		# Rendering the panel
-		if not self.hide: self.screen.blit(pygame.transform.scale(self.panel, self.wh), self.xy)
+		if not self.hide:
+			self.screen.blit(pygame.transform.smoothscale(self.panel, self.wh), self.xy)
+			self.panel.fill(self.color)
 
 		# Rendering action bar on the panel
-		self.screen.blit(pygame.transform.scale(self.actionBar["surface"], self.actionBar["wh"]), self.actionBar["xy"])
-		self.actionBar["surface"].blit(self.actionBar["name"], (8, 4))
+		self.renderActionBar()
 
 		# Rendering rect
-		if not self.hide: pygame.draw.rect(self.screen, COLORS["BORDER"], self.border["rect"], 3)
+		if not self.hide:
+			pygame.draw.rect(self.screen, self.border["color"], self.border["rect"], 3)
 
-		# Child class method
-		self.render()
+			# Child class method
+			self.render()
+
+	# Rendering action bar on ther panel
+	def renderActionBar(self):
+		self.screen.blit(pygame.transform.smoothscale(self.actionBar["surface"], self.actionBar["wh"]), self.actionBar["xy"])
+
+		if self.selected:
+			self.border["color"] = COLORS["BORDERSELECTED"]
+		else:
+			self.border["color"] = COLORS["BORDER"]
+
+		self.actionBar["surface"].fill(self.border["color"])
+		self.actionBar["surface"].blit(self.actionBar["name"], (8, 4))
+
+
+		differenceX = 0
+
+		drawImage(self.actionBar["surface"], self.actionBar["close"], (self.actionBar["wh"][0] - 20, 4))
+		drawImage(self.actionBar["surface"], self.actionBar["hide"], (self.actionBar["wh"][0] - 40, 4))
 
 	# Handling events
 	def events(self, e):

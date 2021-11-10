@@ -7,7 +7,7 @@
 	- Action bar
 	- Move
 	- Resizable
-	- Collapse
+	- Hide
 	- Close
 	- Name
 

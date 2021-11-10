@@ -153,9 +153,6 @@ class Map(Panel):
 
 	# Rendering data
 	def render(self):
-		# Background color
-		self.panel.fill(self.color)
-
 		# Render highlight surface
 		if self.hover and not self.actionBar["hover"]:
 			self.panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize((self.mxy[0], self.mxy[1])))

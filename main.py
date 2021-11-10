@@ -75,8 +75,9 @@ class Main:
 
 		# Sorting the list of panels
 		for i, panel in enumerate(self.panels, 1):
-			if self.panelSelected != i:
-				self.bufferList.append(panel)
+			if not panel.disabled:
+				if self.panelSelected != i:
+					self.bufferList.append(panel)
 		if self.panelSelected != 0: self.bufferList.append(self.panels[self.panelSelected-1])
 
 		# Passing sorted data
@@ -89,8 +90,7 @@ class Main:
 
 		# Updating panels
 		for panel in self.panels:
-			if not panel.disabled:
-				panel.updatePanel()
+			panel.updatePanel()
 
 		# Handling events
 		self.events()
@@ -102,8 +102,7 @@ class Main:
 
 		# Rendering panels
 		for panel in self.panels:
-			if not panel.disabled:
-				panel.renderPanel()
+			panel.renderPanel()
 
 		pygame.display.update()
 
