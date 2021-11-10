@@ -7,6 +7,7 @@ from config import *
 from common import *
 
 # Import classes
+from project import Project
 from map import Map
 from assets import Assets
 from operations import Operations
@@ -29,20 +30,9 @@ class Main:
 		self.running = True
 		self.clock = pygame.time.Clock()
 
-		# Panel List
-		self.panels = []
-		# Panel Map
-		self.panels.append(Map(self.window, "Map", (SIZE[0] / 4, 0), (SIZE[0] * 0.75, SIZE[1] * 0.75), COLORS["GRAY"]))
-		# Panel Operations
-		self.panels.append(Operations(self.window, "Operations", (SIZE[0] / 4, SIZE[1] * 0.75), (SIZE[0] * 0.75, SIZE[1] / 4), COLORS["SPANISHGRAY"]))
-		# Panel Assets
-		self.panels.append(Assets(self.window, "Assets", (0, 0), (SIZE[0] / 4, SIZE[1]), COLORS["TAUPEGRAY"]))
-
-		# Buffer list
-		self.bufferList = []
-
-		# Selected panel number
-		self.panelSelected = 0
+		# Screen list
+		self.screens = []
+		self.screens.append(Project(self.window, "Project screen"))
 
 		# Run game loop
 		self.run()
@@ -53,46 +43,16 @@ class Main:
 			if event.type == pygame.QUIT:
 				self.end()
 
-			# Panel events
-			for i, panel in enumerate(self.panels, 1):
-				# If the panel is not disabled
-				if not panel.disabled:
-					panel.panelEvents(event)
-					# MOUSEBUTTONDOWN
-					if event.type == pygame.MOUSEBUTTONDOWN:
-						# If panel not selected
-						if self.panelSelected != i:
-							wh = panel.wh
-							if panel.hide: wh = [wh[0], panel.actionBar["height"]]
-							if mouseCollision(panel.xy, wh, event.pos):
-								for pnl in self.panels:
-									pnl.selected = False
-								panel.selected = True
-								self.panelSelected = i
+			# Screen events
+			for screen in self.screens:
+				screen.screenEvents(event)
 
 	# Updating data
 	def update(self):
-		# Frame rendering speed
-		self.clock.tick(FPS)
 
-		# Sorting the list of panels
-		for i, panel in enumerate(self.panels, 1):
-			if self.panelSelected != i:
-				self.bufferList.append(panel)
-		if self.panelSelected != 0: self.bufferList.append(self.panels[self.panelSelected-1])
-
-		# Passing sorted data
-		self.panels = self.bufferList.copy()
-		self.panelSelected = len(self.bufferList)
-		self.panels[self.panelSelected-1].selected = True
-
-		# Clear buffer list
-		self.bufferList.clear()
-
-		# Updating panels
-		for panel in self.panels:
-			if not panel.disabled:
-				panel.updatePanel()
+		# Updating screens
+		for screen in self.screens:
+			screen.updateScreen()
 
 		# Handling events
 		self.events()
@@ -100,14 +60,15 @@ class Main:
 	# Rendering data
 	def render(self):
 		# Background color
-		self.window.fill(COLORS["BACKGROUND"])
+		self.window.fill((50, 50, 50))
 
-		# Rendering panels
-		for panel in self.panels:
-			if not panel.disabled:
-				panel.renderPanel()
+		# Rendering screens
+		for screen in self.screens:
+			screen.renderScreen()
 
 		pygame.display.update()
+		# Frame rendering speed
+		self.clock.tick(FPS)
 
 	# Game loop
 	def run(self):

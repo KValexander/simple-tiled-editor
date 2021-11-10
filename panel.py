@@ -17,6 +17,7 @@ class Panel:
 		self.color = color
 
 		# Boolean variables
+		self.lock = False
 		self.hide = False
 		self.move = False
 		self.hover = False
@@ -57,6 +58,8 @@ class Panel:
 		self.actionBar["rect"] = pygame.Rect((0,0), (self.actionBar["iconSize"][0] + self.actionBar["borderSize"] * 2, self.actionBar["iconSize"][1] + self.actionBar["borderSize"] * 2))
 		self.actionBar["surface"] = pygame.Surface((self.wh[0], self.actionBar["height"]))
 		self.actionBar["name"] = self.actionBar["font"].render(str(self.name), True, COLORS["WHITE"])
+		self.actionBar["unlock"] = scLoadImage("gui/unlock.png", self.actionBar["iconSize"])
+		self.actionBar["lock"] = scLoadImage("gui/lock.png", self.actionBar["iconSize"])
 		self.actionBar["hide"] = scLoadImage("gui/hide.png", self.actionBar["iconSize"])
 		self.actionBar["close"] = scLoadImage("gui/close.png", self.actionBar["iconSize"])
 
@@ -120,21 +123,29 @@ class Panel:
 				if self.click:
 					# Check border direction 
 					if self.border["direction"] != 0:
-						self.resize = True
+						if not self.lock:
+							self.resize = True
 					# Check hover on action bar
 					elif self.actionBar["hover"]:
 						if(self.actionBar["clickPos"][0] == 0 and self.actionBar["clickPos"][1] == 0):
 							self.actionBar["clickPos"] = self.mxy
 						if(self.actionBar["clickPos"][0] != 0 and self.actionBar["clickPos"][1] != 0):
-							self.move = True
+							if not self.lock:
+								self.move = True
 
 					# CLOSE
 					if mouseCollision((self.xy[0] + self.wh[0] - 20, self.xy[1] + 4), self.actionBar["iconSize"], e.pos):
-						self.disabled = True
+						if not self.lock:
+							self.disabled = True
 					# HIDE
 					elif mouseCollision((self.xy[0] + self.wh[0] - 40, self.xy[1] + 4), self.actionBar["iconSize"], e.pos):
+						if not self.lock:
 							if self.hide: self.hide = False
 							else: self.hide = True
+					# LOCK
+					elif mouseCollision((self.xy[0] + self.wh[0] - 60, self.xy[1] + 4), self.actionBar["iconSize"], e.pos):
+						if self.lock: self.lock = False
+						else: self.lock = True
 
 		# MOUSEBUTTONUP
 		if e.type == pygame.MOUSEBUTTONUP:
@@ -167,6 +178,11 @@ class Panel:
 			elif mouseCollision((self.xy[0] + self.wh[0] - 40, self.xy[1] + 4), self.actionBar["iconSize"], pos):
 				self.actionBar["iconHover"], self.move = True, False
 				self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 40 - self.actionBar["borderSize"]
+				self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
+			# Hover over the lock icon
+			elif mouseCollision((self.xy[0] + self.wh[0] - 60, self.xy[1] + 4), self.actionBar["iconSize"], pos):
+				self.actionBar["iconHover"], self.move = True, False
+				self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 60 - self.actionBar["borderSize"]
 				self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
 			else: self.actionBar["iconHover"] = False
 
@@ -285,7 +301,7 @@ class Panel:
 
 		# Rendering the panel
 		if not self.hide:
-			self.screen.blit(pygame.transform.smoothscale(self.panel, self.wh), self.xy)
+			self.screen.blit(pygame.transform.scale(self.panel, self.wh), self.xy)
 			self.panel.fill(self.color)
 
 		# Rendering action bar on the panel
@@ -300,26 +316,28 @@ class Panel:
 
 	# Rendering action bar on ther panel
 	def renderActionBar(self):
-		self.screen.blit(pygame.transform.smoothscale(self.actionBar["surface"], (self.wh[0], self.actionBar["height"])), self.xy)
+		self.screen.blit(pygame.transform.scale(self.actionBar["surface"], (self.wh[0], self.actionBar["height"])), self.xy)
 		self.actionBar["surface"].fill(self.border["color"])
 
 		# Rendering parts of the action bar
 		self.screen.blit(self.actionBar["name"], (self.xy[0] + 8, self.xy[1] + 4))
 		drawImage(self.screen, self.actionBar["close"], (self.xy[0] + self.wh[0] - 20, self.xy[1] + 4))
 		drawImage(self.screen, self.actionBar["hide"], (self.xy[0] + self.wh[0] - 40, self.xy[1] + 4))
-
+		if self.lock: drawImage(self.screen, self.actionBar["lock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
+		else: drawImage(self.screen, self.actionBar["unlock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
+		
 		# Highlighting for icons
 		if self.actionBar["iconHover"]:
 			pygame.draw.rect(self.screen, COLORS["WHITE"], self.actionBar["rect"], self.actionBar["borderSize"])
 
-	# Handling events
+	# Child class method
 	def events(self, e):
 		pass
 
-	# Updating data on the panel
+	# Child class method
 	def update(self):
 		pass
 
-	# Rendering data on the panel
+	# Child class method
 	def render(self):
 		pass

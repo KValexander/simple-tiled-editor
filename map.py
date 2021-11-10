@@ -18,6 +18,9 @@ class Map(Panel):
 		self.camera = {}
 		self.setCamera()
 
+		# Lock
+		self.lock = True
+
 		# Tile config
 		self.tile = {}
 		self.setTile()
@@ -149,7 +152,6 @@ class Map(Panel):
 				# Common Methods
 				self.setCameraIndent()
 				self.setGrid()
-
 
 	# Rendering data
 	def render(self):
