@@ -1,5 +1,6 @@
 # Import libraries
 import pygame
+from pygame.locals import *
 
 # Import files
 from config import *
@@ -27,6 +28,10 @@ class Screen:
 
 	# Handling events
 	def screenEvents(self, e):
+		# Resize window
+		if e.type == VIDEORESIZE:
+			self.resizeScreen()
+
 		# Child class method
 		self.events(e)
 
@@ -46,6 +51,14 @@ class Screen:
 								pnl.selected = False
 							panel.selected = True
 							self.panelSelected = i
+
+	# Resize screen
+	def resizeScreen(self):
+		# Since the dimensions of the surface cannot be changed,
+		# I create a new surface and overwrite the old surface of the panels with the new one.
+		self.screen = pygame.Surface(pygame.display.get_window_size())
+		for panel in self.panels:
+			panel.screen = self.screen
 
 	# Updating data
 	def updateScreen(self):

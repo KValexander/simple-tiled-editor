@@ -283,6 +283,8 @@ class Panel:
 		# Resizible
 		self.xy = xy
 		self.wh = wh
+		self.panel = pygame.Surface(self.wh)
+		self.actionBar["surface"] = pygame.Surface((self.wh[0], self.actionBar["height"]))
 		self.border["rect"].x = self.xy[0]
 		self.border["rect"].y = self.xy[1]
 		self.border["rect"].size = self.wh
@@ -301,7 +303,7 @@ class Panel:
 
 		# Rendering the panel
 		if not self.hide:
-			self.screen.blit(pygame.transform.scale(self.panel, self.wh), self.xy)
+			self.screen.blit(self.panel, self.xy)
 			self.panel.fill(self.color)
 
 		# Rendering action bar on the panel
@@ -316,7 +318,7 @@ class Panel:
 
 	# Rendering action bar on ther panel
 	def renderActionBar(self):
-		self.screen.blit(pygame.transform.scale(self.actionBar["surface"], (self.wh[0], self.actionBar["height"])), self.xy)
+		self.screen.blit(self.actionBar["surface"], self.xy)
 		self.actionBar["surface"].fill(self.border["color"])
 
 		# Rendering parts of the action bar
