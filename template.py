@@ -28,7 +28,7 @@ class Template:
 					self.elements.pop(i)
 
 	# Add button
-	def addButton(self, name, xy, wh, value, size=12, background=COLORS["BACKGROUND"], color=COLORS["WHITE"], font=FONT):
+	def addButton(self, name, xy, wh, value, size=12, background=COLORS["BUTTON"], color=COLORS["WHITE"], font=FONT):
 		button = Button(name, xy, wh, value, size, background, color, font)
 		self.elements.append(button)
 

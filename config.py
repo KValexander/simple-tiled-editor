@@ -10,6 +10,7 @@ COLORS = {
 	"SPANISHGRAY": (153, 153, 153),
 	"BORDER": (85, 85, 85),
 	"BORDERSELECTED": (100, 100, 100),
+	"BUTTON": (120, 120, 120),
 }
 
 # Screen size
