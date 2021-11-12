@@ -28,15 +28,16 @@ class Template:
 					self.elements.pop(i)
 
 	# Add button
-	def addButton(self):
-		pass
+	def addButton(self, name, xy, wh, value, size=12, background=COLORS["BACKGROUND"], color=COLORS["WHITE"], font=FONT):
+		button = Button(name, xy, wh, value, size, background, color, font)
+		self.elements.append(button)
 
 	# Add text input
 	def addTextInput(self):
 		pass
 
 	# Add inscription
-	def addInscription(self, name, xy, value, size=12, color=COLORS["BLACK"], font=FONT):
+	def addInscription(self, name, xy, value, size=12, color=COLORS["WHITE"], font=FONT):
 		inscription = Inscription(name, xy, value, size, color, font)
 		self.elements.append(inscription)
 

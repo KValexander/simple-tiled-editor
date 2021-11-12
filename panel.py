@@ -156,6 +156,17 @@ class Panel(Template):
 			self.actionBar["clickPos"] = (0, 0)
 
 		if not self.hide:
+			# ELEMENT EVENTS
+			if len(self.elements) != 0:
+				for element in self.elements:
+					if not element.disabled:
+						if e.type == pygame.MOUSEMOTION:
+							element.hoverEvent(self.mxy)
+						if e.type == pygame.MOUSEBUTTONDOWN:
+							element.clickEvent(self.mxy, "down")
+						if e.type == pygame.MOUSEBUTTONUP:
+							element.clickEvent(self.mxy, "up")
+
 			# Child class method
 			self.events(e)
 
@@ -317,7 +328,7 @@ class Panel(Template):
 			# RENDERING ELEMENTS
 			if len(self.elements) != 0:
 				for element in self.elements:
-					if not element.hide:
+					if not element.disabled:
 						element.draw(self.panel)
 
 			# Child class method

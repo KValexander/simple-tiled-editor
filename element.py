@@ -17,9 +17,18 @@ class Element:
 		self.click = False
 		self.hover = False
 		self.selected = False
+		self.disabled = False
 
 		# Default variables
 		self.font = pygame.font.Font(self.srcFont, self.size)
+
+	# Handling hover
+	def hoverEvent(self, pos):
+		pass
+
+	# Handling click
+	def clickEvent(self, pos, etype):
+		pass
 
 	# Draw
 	def draw(self, screen):

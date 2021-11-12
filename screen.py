@@ -43,6 +43,17 @@ class Screen(Template):
 		# Child class method
 		self.events(e)
 
+		# ELEMENT EVENTS
+		if len(self.elements) != 0:
+			for element in self.elements:
+				if not element.disabled:
+					if e.type == pygame.MOUSEMOTION:
+						element.hoverEvent(self.mxy)
+					if e.type == pygame.MOUSEBUTTONDOWN:
+						element.clickEvent(self.mxy, "down")
+					if e.type == pygame.MOUSEBUTTONUP:
+						element.clickEvent(self.mxy, "up")
+
 		# PANEL EVENTS
 		if len(self.panels) != 0:
 			for i, panel in enumerate(self.panels, 1):
@@ -101,14 +112,14 @@ class Screen(Template):
 		# Child class method
 		self.render(self.screen)
 
+		# RENDERING ELEMENTS
+		if len(self.elements) != 0:
+			for element in self.elements:
+				if not element.disabled:
+					element.draw(self.screen)
+
 		# RENDERING PANELS
 		if len(self.panels) != 0:
 			for panel in self.panels:
 				if not panel.disabled:
 					panel.renderPanel(self.screen)
-
-		# RENDERING ELEMENTS
-		if len(self.elements) != 0:
-			for element in self.elements:
-				if not element.hide:
-					element.draw(self.screen)
