@@ -5,12 +5,16 @@ import pygame
 from config import *
 from common import *
 
+# Import classes
+from template import Template
+
 # Class Panel
-class Panel:
+class Panel(Template):
 	# Constructor
-	def __init__(self, screen, name, xy, wh, color):
+	def __init__(self, name, xy, wh, color):
+		super().__init__()
+
 		# Custom variables
-		self.screen = screen
 		self.name = name
 		self.xy = [int(xy[0]), int(xy[1])]
 		self.wh = [int(wh[0]), int(wh[1])]
@@ -24,7 +28,6 @@ class Panel:
 		self.click = False
 		self.resize = False
 		self.selected = False
-		self.disabled = False
 
 		# Keys
 		self.keys = {
@@ -52,7 +55,7 @@ class Panel:
 			"clickPos": (0, 0),
 			"iconSize": (12, 12),
 			"iconHover": False,
-			"font": pygame.font.Font("gui/Montserrat-Light.ttf", 12),
+			"font": pygame.font.Font(FONT, 12),
 			"borderSize": 2,
 		}
 		self.actionBar["rect"] = pygame.Rect((0,0), (self.actionBar["iconSize"][0] + self.actionBar["borderSize"] * 2, self.actionBar["iconSize"][1] + self.actionBar["borderSize"] * 2))
@@ -63,8 +66,6 @@ class Panel:
 		self.actionBar["hide"] = scLoadImage("gui/hide.png", self.actionBar["iconSize"])
 		self.actionBar["close"] = scLoadImage("gui/close.png", self.actionBar["iconSize"])
 
-		# Mouse position on the panel
-		self.mxy = pygame.mouse.get_pos()
 		# Mouse coordinates while clicking
 		self.clickPos = (0, 0)
 
@@ -296,50 +297,44 @@ class Panel:
 			self.update()
 
 	# Rendering the panel
-	def renderPanel(self):
+	def renderPanel(self, screen):
 		# Border color
 		if self.selected: self.border["color"] = COLORS["BORDERSELECTED"]
 		else: self.border["color"] = COLORS["BORDER"]
 
 		# Rendering the panel
 		if not self.hide:
-			self.screen.blit(self.panel, self.xy)
+			screen.blit(self.panel, self.xy)
 			self.panel.fill(self.color)
 
 		# Rendering action bar on the panel
-		self.renderActionBar()
+		self.renderActionBar(screen)
 
-		# Rendering rect
 		if not self.hide:
-			pygame.draw.rect(self.screen, self.border["color"], self.border["rect"], 3)
+			# Rendering rect
+			pygame.draw.rect(screen, self.border["color"], self.border["rect"], 3)
+
+			# RENDERING ELEMENTS
+			if len(self.elements) != 0:
+				for element in self.elements:
+					if not element.hide:
+						element.draw(self.panel)
 
 			# Child class method
-			self.render()
+			self.render(self.panel)
 
 	# Rendering action bar on ther panel
-	def renderActionBar(self):
-		self.screen.blit(self.actionBar["surface"], self.xy)
+	def renderActionBar(self, screen):
+		screen.blit(self.actionBar["surface"], self.xy)
 		self.actionBar["surface"].fill(self.border["color"])
 
 		# Rendering parts of the action bar
-		self.screen.blit(self.actionBar["name"], (self.xy[0] + 8, self.xy[1] + 4))
-		drawImage(self.screen, self.actionBar["close"], (self.xy[0] + self.wh[0] - 20, self.xy[1] + 4))
-		drawImage(self.screen, self.actionBar["hide"], (self.xy[0] + self.wh[0] - 40, self.xy[1] + 4))
-		if self.lock: drawImage(self.screen, self.actionBar["lock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
-		else: drawImage(self.screen, self.actionBar["unlock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
+		screen.blit(self.actionBar["name"], (self.xy[0] + 8, self.xy[1] + 4))
+		drawImage(screen, self.actionBar["close"], (self.xy[0] + self.wh[0] - 20, self.xy[1] + 4))
+		drawImage(screen, self.actionBar["hide"], (self.xy[0] + self.wh[0] - 40, self.xy[1] + 4))
+		if self.lock: drawImage(screen, self.actionBar["lock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
+		else: drawImage(screen, self.actionBar["unlock"], (self.xy[0] + self.wh[0] - 60, self.xy[1] + 4))
 		
 		# Highlighting for icons
 		if self.actionBar["iconHover"]:
-			pygame.draw.rect(self.screen, COLORS["WHITE"], self.actionBar["rect"], self.actionBar["borderSize"])
-
-	# Child class method
-	def events(self, e):
-		pass
-
-	# Child class method
-	def update(self):
-		pass
-
-	# Child class method
-	def render(self):
-		pass
+			pygame.draw.rect(screen, COLORS["WHITE"], self.actionBar["rect"], self.actionBar["borderSize"])

@@ -11,8 +11,8 @@ from panel import Panel
 # Class Map
 class Map(Panel):
 	# Constructor
-	def __init__(self, screen, name, xy, wh, color):
-		super().__init__(screen, name, xy, wh, color)
+	def __init__(self, name, xy, wh, color):
+		super().__init__(name, xy, wh, color)
 
 		# Camera config
 		self.camera = {}
@@ -154,17 +154,17 @@ class Map(Panel):
 				self.setGrid()
 
 	# Rendering data
-	def render(self):
+	def render(self, panel):
 		# Render highlight surface
 		if self.hover and not self.actionBar["hover"]:
-			self.panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize((self.mxy[0], self.mxy[1])))
+			panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize((self.mxy[0], self.mxy[1])))
 
 		# Draw grid
-		self.drawGrid()
+		self.drawGrid(panel)
 
 	# Draw grid
-	def drawGrid(self):
+	def drawGrid(self, panel):
 		for x in range(self.grid["startX"], self.grid["condX"] + 1, self.tile["size"]):
-			pygame.draw.line(self.panel, COLORS["WHITE"], (x, self.grid["startY"]), (x, self.grid["condY"]), 1)
+			pygame.draw.line(panel, COLORS["WHITE"], (x, self.grid["startY"]), (x, self.grid["condY"]), 1)
 		for y in range(self.grid["startY"], self.grid["condY"] + 1, self.tile["size"]):
-			pygame.draw.line(self.panel, COLORS["WHITE"], (self.grid["startX"], y), (self.grid["condX"], y), 1)
+			pygame.draw.line(panel, COLORS["WHITE"], (self.grid["startX"], y), (self.grid["condX"], y), 1)

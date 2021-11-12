@@ -16,5 +16,8 @@ COLORS = {
 SIZE = (1366 , 768)
 FULLSIZE = False
 
+# Font
+FONT = "gui/Montserrat-Light.ttf"
+
 # FPS
 FPS = 30

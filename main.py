@@ -32,7 +32,7 @@ class Main:
 
 		# Screen list
 		self.screens = []
-		self.screens.append(Project(self.window, "Project screen"))
+		self.screens.append(Project("Project screen"))
 
 		# Run game loop
 		self.run()
@@ -43,16 +43,20 @@ class Main:
 			if event.type == pygame.QUIT:
 				self.end()
 
-			# Screen events
-			for screen in self.screens:
-				screen.screenEvents(event)
+			# SCREEN EVENTS
+			if len(self.screens) != 0:
+				for screen in self.screens:
+					if not screen.disabled:
+						screen.screenEvents(event)
 
 	# Updating data
 	def update(self):
 
-		# Updating screens
-		for screen in self.screens:
-			screen.updateScreen()
+		# UPDATING SCREENS
+		if len(self.screens) != 0:
+			for screen in self.screens:
+				if not screen.disabled:
+					screen.updateScreen()
 
 		# Handling events
 		self.events()
@@ -62,9 +66,11 @@ class Main:
 		# Background color
 		self.window.fill((50, 50, 50))
 
-		# Rendering screens
-		for screen in self.screens:
-			screen.renderScreen()
+		# RENDERING SCREENS
+		if len(self.screens) != 0:
+			for screen in self.screens:
+				if not screen.disabled:
+					screen.renderScreen(self.window)
 
 		pygame.display.update()
 		# Frame rendering speed

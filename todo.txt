@@ -1,10 +1,16 @@
 - Main class (✔)
 - Action bar
-- Abstract class Screen
-- Abstract class Panel (✔)
-- Abstract class Template
 
-- Panel: (✔)
+- Abstract class Element
+	- Class Button
+	- Class TextInput
+	- Class Inscription
+
+- Abstract class Template (✔)
+	- Abstract class Screen (✔)
+	- Abstract class Panel (✔)
+
+- Panel features: (✔)
 	- Action bar (✔)
 	- Move (✔)
 	- Resizable (✔)
@@ -12,11 +18,10 @@
 	- Close(✔)
 	- Name(✔)
 
-- Screen:
-	...
-
-- Start Screen
-- Project screen
+- Screen: (✔)
+	- Resizible  (✔)
+	- Class StartScreen
+	- Class ProjectScreen
 
 - Start Screen:
 	- List projects panel
