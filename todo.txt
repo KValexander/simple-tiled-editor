@@ -2,9 +2,11 @@
 - Action bar
 
 - Abstract class Element
-	- Class Button
-	- Class TextInput
-	- Class Inscription
+	- Class Icon (✔)
+	- Class Link (✔)
+	- Class Button (✔)
+	- Class InputBox
+	- Class Inscription (✔)
 
 - Abstract class Template (✔)
 	- Abstract class Screen (✔)

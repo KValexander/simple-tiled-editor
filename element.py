@@ -25,6 +25,22 @@ class Element:
 		# Default variables
 		self.font = pygame.font.Font(self.srcFont, self.size)
 
+
+	# Handling events
+	def events(self, e, mxy):
+		if e.type == pygame.KEYDOWN:
+			self.keyDownEvent(e.key, e.unicode)
+		if e.type == pygame.MOUSEMOTION:
+			self.hoverEvent(mxy)
+		if e.type == pygame.MOUSEBUTTONDOWN:
+			self.clickEvent(mxy, "down")
+		if e.type == pygame.MOUSEBUTTONUP:
+			self.clickEvent(mxy, "up")
+
+	# Handling key down
+	def keyDownEvent(self, key, ucode):
+		pass
+
 	# Handling hover
 	def hoverEvent(self, pos):
 		pass

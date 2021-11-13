@@ -47,12 +47,7 @@ class Screen(Template):
 		if len(self.elements) != 0:
 			for element in self.elements:
 				if not element.disabled:
-					if e.type == pygame.MOUSEMOTION:
-						element.hoverEvent(self.mxy)
-					if e.type == pygame.MOUSEBUTTONDOWN:
-						element.clickEvent(self.mxy, "down")
-					if e.type == pygame.MOUSEBUTTONUP:
-						element.clickEvent(self.mxy, "up")
+					element.events(e, self.mxy)
 
 		# PANEL EVENTS
 		if len(self.panels) != 0:

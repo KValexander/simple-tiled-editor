@@ -156,16 +156,13 @@ class Panel(Template):
 			self.actionBar["clickPos"] = (0, 0)
 
 		if not self.hide:
-			# ELEMENT EVENTS
-			if len(self.elements) != 0:
-				for element in self.elements:
-					if not element.disabled:
-						if e.type == pygame.MOUSEMOTION:
-							element.hoverEvent(self.mxy)
-						if e.type == pygame.MOUSEBUTTONDOWN:
-							element.clickEvent(self.mxy, "down")
-						if e.type == pygame.MOUSEBUTTONUP:
-							element.clickEvent(self.mxy, "up")
+			
+			if self.selected:
+				# ELEMENT EVENTS
+				if len(self.elements) != 0:
+					for element in self.elements:
+						if not element.disabled:
+							element.events(e, self.mxy)
 
 			# Child class method
 			self.events(e)
@@ -181,22 +178,23 @@ class Panel(Template):
 		if mouseCollision(self.xy, (self.wh[0], self.actionBar["height"]), pos):
 			self.actionBar["hover"] = True
 
-			# Hover over the close icon
-			if mouseCollision((self.xy[0] + self.wh[0] - 20, self.xy[1] + 4), self.actionBar["iconSize"], pos):
-				self.actionBar["iconHover"], self.move = True, False
-				self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 20 - self.actionBar["borderSize"]
-				self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
-			# Hover over the hide icon
-			elif mouseCollision((self.xy[0] + self.wh[0] - 40, self.xy[1] + 4), self.actionBar["iconSize"], pos):
-				self.actionBar["iconHover"], self.move = True, False
-				self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 40 - self.actionBar["borderSize"]
-				self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
-			# Hover over the lock icon
-			elif mouseCollision((self.xy[0] + self.wh[0] - 60, self.xy[1] + 4), self.actionBar["iconSize"], pos):
-				self.actionBar["iconHover"], self.move = True, False
-				self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 60 - self.actionBar["borderSize"]
-				self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
-			else: self.actionBar["iconHover"] = False
+			if not self.move:
+				# Hover over the close icon
+				if mouseCollision((self.xy[0] + self.wh[0] - 20, self.xy[1] + 4), self.actionBar["iconSize"], pos):
+					self.actionBar["iconHover"], self.move = True, False
+					self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 20 - self.actionBar["borderSize"]
+					self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
+				# Hover over the hide icon
+				elif mouseCollision((self.xy[0] + self.wh[0] - 40, self.xy[1] + 4), self.actionBar["iconSize"], pos):
+					self.actionBar["iconHover"], self.move = True, False
+					self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 40 - self.actionBar["borderSize"]
+					self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
+				# Hover over the lock icon
+				elif mouseCollision((self.xy[0] + self.wh[0] - 60, self.xy[1] + 4), self.actionBar["iconSize"], pos):
+					self.actionBar["iconHover"], self.move = True, False
+					self.actionBar["rect"].x = self.xy[0] + self.wh[0] - 60 - self.actionBar["borderSize"]
+					self.actionBar["rect"].y = self.xy[1] + 4 - self.actionBar["borderSize"]
+				else: self.actionBar["iconHover"] = False
 
 		else:
 			self.actionBar["iconHover"] = False
@@ -242,7 +240,6 @@ class Panel(Template):
 			else:
 				if not self.resize: self.border["direction"] = 0
 				pygame.mouse.set_system_cursor(pygame.SYSTEM_CURSOR_ARROW)
-
 
 	# Moving the panel
 	def movePanel(self):

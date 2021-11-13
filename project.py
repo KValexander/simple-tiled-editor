@@ -27,6 +27,7 @@ class Project(Screen):
 		panel = Operations("Operations", (self.screen.get_size()[0] / 4, self.screen.get_size()[1] * 0.75), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] / 4), COLORS["SPANISHGRAY"])
 		panel.addButton("btn1", (10, 30), (100, 30), "GRID")
 		panel.addLink("link1", (130, 37), "GRID")
+		panel.addInputBox("ti1", (200, 30), (100, 30), 20)
 		self.panels.append(panel)
 
 		# Panel Assets

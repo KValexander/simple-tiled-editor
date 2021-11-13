@@ -42,9 +42,10 @@ class Template:
 		button = Button(name, xy, wh, value, size, background, color, font)
 		self.elements.append(button)
 
-	# Add text input
-	def addTextInput(self):
-		pass
+	# Add input box
+	def addInputBox(self, name, xy, wh, size=12, color=COLORS["WHITE"], font=FONT):
+		textInput = InputBox(name, xy, wh, size, color, font)
+		self.elements.append(textInput)
 
 	# Add inscription
 	def addInscription(self, name, xy, value, size=12, color=COLORS["WHITE"], font=FONT):

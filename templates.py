@@ -13,7 +13,7 @@ from element import Element
 # 	Icon
 # 	Link
 # 	Button
-# 	TextInput
+# 	InputBox
 # 	Inscription
 
 # Class Icon
@@ -144,11 +144,50 @@ class Button(Element):
 			if self.hover:
 				pygame.draw.rect(screen, COLORS["BORDER"], self.rect, 3)
 
-# Class TextInput
-class TextInput(Element):
+# Class InputBox
+class InputBox(Element):
 	# Constructor
-	def __init__(self, name, xy, size, color, font):
+	def __init__(self, name, xy, wh, size, color, font):
 		super().__init__(name, xy, size, color, font)
+
+		# Custom variables
+		self.wh = wh
+
+		# Default variables
+		self.rect = pygame.Rect(self.xy, self.wh)
+		self.text = ""
+
+	# Handling keydown event
+	def keyDownEvent(self, key, ucode):
+		if self.selected:
+			if key == pygame.K_BACKSPACE:
+				self.text = self.text[:-1]
+			else: self.text += ucode
+
+	# Handling click
+	def clickEvent(self, pos, etype):
+		if etype == "down":
+			if mouseCollision(self.xy, self.rect.size, pos):
+				self.selected = True
+			else: self.selected = False
+
+	# Rendering input box
+	def draw(self, screen):
+		self.ftext = self.font.render(str(self.text), True, self.color)
+		size = self.font.size(self.text)
+		if self.wh[0] < size[0]: self.rect.width = size[0] + 10
+
+		if self.selected: color = COLORS["BORDERSELECTED"]
+		else: color = COLORS["BORDER"]
+
+		pygame.draw.rect(screen, color, self.rect, 2)
+		screen.blit(self.ftext, (self.xy[0] + 5, self.xy[1] + 2))
+
+		if self.selected:
+			startPos = (size[0] + self.xy[0] + 5, self.xy[1] + 2)
+			endPos = (startPos[0], startPos[1] + size[1])
+			pygame.draw.line(screen, color, startPos, endPos, 1)
+
 
 # Class Inscription
 class Inscription(Element):
