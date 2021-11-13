@@ -1,10 +1,13 @@
 # Import libraries
 import pygame
 
+# Import files
+from config import *
+
 # Class Template
 class Element:
 	# Constructor
-	def __init__(self, name, xy, size, color, font):
+	def __init__(self, name, xy, size=12, color=COLORS["WHITE"], font=FONT):
 		# Custom variables
 		self.name = name
 		self.xy = xy
@@ -30,6 +33,6 @@ class Element:
 	def clickEvent(self, pos, etype):
 		pass
 
-	# Draw
+	# Rendering element
 	def draw(self, screen):
 		pass

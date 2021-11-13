@@ -20,5 +20,8 @@ FULLSIZE = False
 # Font
 FONT = "gui/Montserrat-Light.ttf"
 
+# STOCKIMAGE
+STOCKIMAGE = "gui/noimage.png"
+
 # FPS
 FPS = 30

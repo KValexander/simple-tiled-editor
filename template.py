@@ -27,6 +27,16 @@ class Template:
 				if element.name == name:
 					self.elements.pop(i)
 
+	# Add icon
+	def addIcon(self, name, xy, src, wh=None):
+		icon = Icon(name, xy, src, wh)
+		self.elements.append(icon)
+
+	# Add link
+	def addLink(self, name, xy, value, size=12, color=COLORS["WHITE"], font=FONT):
+		link = Link(name, xy, value, size, color, font)
+		self.elements.append(link)
+
 	# Add button
 	def addButton(self, name, xy, wh, value, size=12, background=COLORS["BUTTON"], color=COLORS["WHITE"], font=FONT):
 		button = Button(name, xy, wh, value, size, background, color, font)

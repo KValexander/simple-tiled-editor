@@ -26,8 +26,10 @@ class Project(Screen):
 		# Panel Operations
 		panel = Operations("Operations", (self.screen.get_size()[0] / 4, self.screen.get_size()[1] * 0.75), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] / 4), COLORS["SPANISHGRAY"])
 		panel.addButton("btn1", (10, 30), (100, 30), "GRID")
+		panel.addLink("link1", (130, 37), "GRID")
 		self.panels.append(panel)
 
 		# Panel Assets
 		panel = Assets("Assets", (0, 0), (self.screen.get_size()[0] / 4, self.screen.get_size()[1]), COLORS["TAUPEGRAY"])
+		panel.addIcon("icn1", (10, 30), "images/grid.jpg", (300, 300))
 		self.panels.append(panel)
