@@ -7,8 +7,9 @@ from config import *
 # Class Template
 class Element:
 	# Constructor
-	def __init__(self, name, xy, size=12, color=COLORS["WHITE"], font=FONT):
+	def __init__(self, elementType, name, xy, size=12, color=COLORS["WHITE"], font=FONT):
 		# Custom variables
+		self.type = elementType
 		self.name = name
 		self.xy = xy
 		self.size = size

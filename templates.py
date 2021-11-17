@@ -20,7 +20,7 @@ from element import Element
 class Icon(Element):
 	# Constructor
 	def __init__(self, name, xy, src, wh=None):
-		super().__init__(name, xy)
+		super().__init__("icon", name, xy)
 
 		# Custom variables
 		self.src = src
@@ -49,10 +49,11 @@ class Icon(Element):
 
 	# Handling hover
 	def hoverEvent(self, pos):
-		# MOUSEMOTION
-		if mouseCollision(self.xy, self.wh, pos):
-			self.hover = True
-		else: self.hover = False
+		if not self.hide:
+			# MOUSEMOTION
+			if mouseCollision(self.xy, self.wh, pos):
+				self.hover = True
+			else: self.hover = False
 
 	# Rendering image
 	def draw(self, screen):
@@ -66,7 +67,7 @@ class Icon(Element):
 class Link(Element):
 	# Constructor
 	def __init__(self, name, xy, value, size, color, font):
-		super().__init__(name, xy, size, color, font)
+		super().__init__("link", name, xy, size, color, font)
 
 		# Custom variables
 		self.value = value
@@ -79,20 +80,22 @@ class Link(Element):
 
 	# Handling hover
 	def hoverEvent(self, pos):
-		# MOUSEMOTION
-		if mouseCollision(self.xy, self.frect.size, pos):
-			self.hover = True
-		else: self.hover = False
+		if not self.hide:
+			# MOUSEMOTION
+			if mouseCollision(self.xy, self.frect.size, pos):
+				self.hover = True
+			else: self.hover = False
 
 	# Handling click
 	def clickEvent(self, pos, etype):
-		# MOUSEBUTTONDOWN
-		if etype == "down":
-			if mouseCollision(self.xy, self.frect.size, pos):
-				self.click = True
-		# MOUSEBUTTONUP
-		if etype == "up":
-			self.click = False
+		if not self.hide:
+			# MOUSEBUTTONDOWN
+			if etype == "down":
+				if mouseCollision(self.xy, self.frect.size, pos):
+					self.click = True
+			# MOUSEBUTTONUP
+			if etype == "up":
+				self.click = False
 
 	# Rendering link
 	def draw(self, screen): 
@@ -106,7 +109,7 @@ class Link(Element):
 class Button(Element):
 	# Constructor
 	def __init__(self, name, xy, wh, value, size, background, color, font):
-		super().__init__(name, xy, size, color, font)
+		super().__init__("button", name, xy, size, color, font)
 		# Custom variables
 		self.wh = wh
 		self.value = value
@@ -120,20 +123,22 @@ class Button(Element):
 
 	# Handling hover
 	def hoverEvent(self, pos):
-		# MOUSEMOTION
-		if mouseCollision(self.xy, self.wh, pos):
-			self.hover = True
-		else: self.hover = False
+		if not self.hide:
+			# MOUSEMOTION
+			if mouseCollision(self.xy, self.wh, pos):
+				self.hover = True
+			else: self.hover = False
 
 	# Handling click
 	def clickEvent(self, pos, etype):
-		# MOUSEBUTTONDOWN
-		if etype == "down":
-			if mouseCollision(self.xy, self.wh, pos):
-				self.click = True
-		# MOUSEBUTTONUP
-		if etype == "up":
-			self.click = False
+		if not self.hide:
+			# MOUSEBUTTONDOWN
+			if etype == "down":
+				if mouseCollision(self.xy, self.wh, pos):
+					self.click = True
+			# MOUSEBUTTONUP
+			if etype == "up":
+				self.click = False
 
 	# Rendering button
 	def draw(self, screen):
@@ -148,7 +153,7 @@ class Button(Element):
 class InputBox(Element):
 	# Constructor
 	def __init__(self, name, xy, wh, size, color, font):
-		super().__init__(name, xy, size, color, font)
+		super().__init__("inputBox", name, xy, size, color, font)
 
 		# Custom variables
 		self.wh = wh
@@ -159,41 +164,44 @@ class InputBox(Element):
 
 	# Handling keydown event
 	def keyDownEvent(self, key, ucode):
-		if self.selected:
-			if key == pygame.K_BACKSPACE:
-				self.text = self.text[:-1]
-			else: self.text += ucode
+		if not self.hide:
+			if self.selected:
+				if key == pygame.K_BACKSPACE:
+					self.text = self.text[:-1]
+				else: self.text += ucode
 
 	# Handling click
 	def clickEvent(self, pos, etype):
-		if etype == "down":
-			if mouseCollision(self.xy, self.rect.size, pos):
-				self.selected = True
-			else: self.selected = False
+		if not self.hide:
+			if etype == "down":
+				if mouseCollision(self.xy, self.rect.size, pos):
+					self.selected = True
+				else: self.selected = False
 
 	# Rendering input box
 	def draw(self, screen):
-		self.ftext = self.font.render(str(self.text), True, self.color)
-		size = self.font.size(self.text)
-		if self.wh[0] < size[0]: self.rect.width = size[0] + 10
+		if not self.hide:
+			self.ftext = self.font.render(str(self.text), True, self.color)
+			size = self.font.size(self.text)
+			if self.wh[0] < size[0]: self.rect.width = size[0] + 10
 
-		if self.selected: color = COLORS["BORDERSELECTED"]
-		else: color = COLORS["BORDER"]
+			if self.selected: color = COLORS["BORDERSELECTED"]
+			else: color = COLORS["BORDER"]
 
-		pygame.draw.rect(screen, color, self.rect, 2)
-		screen.blit(self.ftext, (self.xy[0] + 5, self.xy[1] + 2))
+			pygame.draw.rect(screen, color, self.rect, 2)
+			screen.blit(self.ftext, (self.xy[0] + 5, self.xy[1] + 2))
 
-		if self.selected:
-			startPos = (size[0] + self.xy[0] + 5, self.xy[1] + 2)
-			endPos = (startPos[0], startPos[1] + size[1])
-			pygame.draw.line(screen, color, startPos, endPos, 1)
+			if self.selected:
+				startPos = (size[0] + self.xy[0] + 5, self.xy[1] + 2)
+				endPos = (startPos[0], startPos[1] + size[1])
+				pygame.draw.line(screen, color, startPos, endPos, 1)
 
 
 # Class Inscription
 class Inscription(Element):
 	# Constructor
 	def __init__(self, name, xy, value, size, color, font):
-		super().__init__(name, xy, size, color, font)
+		super().__init__("inscription", name, xy, size, color, font)
 
 		# Custom variables
 		self.value = value

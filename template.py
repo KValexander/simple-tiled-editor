@@ -20,12 +20,19 @@ class Template:
 		# Mouse position for the current surface
 		self.mxy = pygame.mouse.get_pos()
 
-	# Delete element
-	def deleteElement(self, name):
+	# Get element
+	def getElement(self, name):
 		if len(self.elements) != 0:
 			for i, element in enumerate(self.elements, 0):
 				if element.name == name:
-					self.elements.pop(i)
+					return element
+
+	# Remove element
+	def removeElement(self, name):
+		if len(self.elements) != 0:
+			for element in self.elements:
+				if element.name == name:
+					self.elements.remove(element)
 
 	# Add icon
 	def addIcon(self, name, xy, src, wh=None):

@@ -157,12 +157,11 @@ class Panel(Template):
 
 		if not self.hide:
 			
-			if self.selected:
-				# ELEMENT EVENTS
-				if len(self.elements) != 0:
-					for element in self.elements:
-						if not element.disabled:
-							element.events(e, self.mxy)
+			# ELEMENT EVENTS
+			if len(self.elements) != 0:
+				for element in self.elements:
+					if not element.disabled:
+						element.events(e, self.mxy)
 
 			# Child class method
 			self.events(e)
