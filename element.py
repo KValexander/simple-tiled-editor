@@ -26,7 +26,6 @@ class Element:
 		# Default variables
 		self.font = pygame.font.Font(self.srcFont, self.size)
 
-
 	# Handling events
 	def events(self, e, mxy):
 		if e.type == pygame.KEYDOWN:

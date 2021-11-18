@@ -28,11 +28,8 @@ class Template:
 					return element
 
 	# Remove element
-	def removeElement(self, name):
-		if len(self.elements) != 0:
-			for element in self.elements:
-				if element.name == name:
-					self.elements.remove(element)
+	def removeElement(self, prop, val=None):
+		self.elements = [x for x in self.elements if getattr(x, prop) != val]
 
 	# Add icon
 	def addIcon(self, name, xy, src, wh=None):

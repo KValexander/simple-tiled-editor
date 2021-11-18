@@ -31,5 +31,6 @@ class Project(Screen):
 		panel.addInputBox("pathToAssets", (10, 30), (panel.wh[0] - 20, 30), 20)
 		panel.getElement("pathToAssets").text = "assets/"
 		panel.addButton("load", (10, 70), (100, 30), "Load", 16)
+		panel.addButton("reset", (120, 70), (100, 30), "Reset", 16)
 		panel.addButton("clear", (panel.wh[0] - 110, 70), (100, 30), "Clear", 16)
 		self.panels.append(panel)

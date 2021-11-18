@@ -52,6 +52,7 @@ class Icon(Element):
 		if not self.hide:
 			# MOUSEMOTION
 			if mouseCollision(self.xy, self.wh, pos):
+				print(self.xy)
 				self.hover = True
 			else: self.hover = False
 

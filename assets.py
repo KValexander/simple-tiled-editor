@@ -21,18 +21,12 @@ class Assets(Panel):
 					# Load assets
 					if element.name == "load":
 						self.loadAssets()
+					# Reset
+					elif element.name == "reset":
+						self.getElement("pathToAssets").text = ""
 					# Clear
 					elif element.name == "clear":
-						self.clearAssets()
-
-	# Clear assets
-	def clearAssets(self):
-		self.getElement("pathToAssets").text = ""
-		for element in self.elements:
-			if element.type == "icon":
-				self.removeElement(element.name)
-		print(self.elements)
-
+						self.removeElement("type", "icon")
 
 	# Load assets
 	def loadAssets(self):
@@ -43,12 +37,14 @@ class Assets(Panel):
 		if not os.path.exists(pathToAssets) or not os.path.isdir(pathToAssets): return
 
 		# Removing previous loadings
-		for element in self.elements:
-			if element.type == "icon":
-				print(self.removeElement(element.name))
+		self.removeElement("type", "icon")
 
 		# Getting images of assets
 		images = os.listdir(pathToAssets)
+
+		# for y in range(110, self.wh[1], 64):
+		# 	for x in range(10, self.wh[0], 64):
+		# 		print(x, y)
 
 		xy = [10, 110]
 		size = 64
@@ -61,10 +57,9 @@ class Assets(Panel):
 		for image in images:
 			if re.search(r"\.png|jpg|jpeg", image):
 				name = re.sub(r"\.png|jpg|jpeg", "", image)
-				self.addIcon(name, xy, pathToAssets+image, (size, size))
+				self.addIcon(name, xy.copy(), pathToAssets+image, (size, size))
 				xy[0] += size
-
-				if xy[0] > self.wh[0]:
+				if xy[0] + size > self.wh[0]:
 					xy[0] = 10
 					xy[1] += size
-				if xy[1] > self.wh[1]: return
+				if xy[1] + size > self.wh[1]: return
