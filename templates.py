@@ -52,7 +52,6 @@ class Icon(Element):
 		if not self.hide:
 			# MOUSEMOTION
 			if mouseCollision(self.xy, self.wh, pos):
-				print(self.xy)
 				self.hover = True
 			else: self.hover = False
 
@@ -62,7 +61,7 @@ class Icon(Element):
 			screen.blit(self.image, self.xy)
 			# In the case of hovering
 			if self.hover:
-				pygame.draw.rect(screen, COLORS["BORDER"], self.border, 3)
+				pygame.draw.rect(screen, (127,255,212), self.border, 3)
 
 # Class Link
 class Link(Element):

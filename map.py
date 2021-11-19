@@ -11,8 +11,8 @@ from panel import Panel
 # Class Map
 class Map(Panel):
 	# Constructor
-	def __init__(self, name, xy, wh, color):
-		super().__init__(name, xy, wh, color)
+	def __init__(self, screen, name, xy, wh, color):
+		super().__init__(screen, name, xy, wh, color)
 
 		# Camera config
 		self.camera = {}
@@ -20,6 +20,9 @@ class Map(Panel):
 
 		# Lock
 		self.lock = True
+
+		# Boolean variables
+		self.put = False
 
 		# Tile config
 		self.tile = {}
@@ -54,6 +57,7 @@ class Map(Panel):
 		self.tile["cellX"] = 10
 		self.tile["cellY"] = 10
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
+		self.tile["tiles"] = []
 		self.setTileSize(self.tile["scale"])
 
 	# Set tile size
@@ -114,11 +118,21 @@ class Map(Panel):
 			if self.hover and not self.actionBar["hover"]:
 				# Highlight color
 				if mouseCollision(self.grid["startXY"], self.grid["size"], self.mxy):
-					self.highlight.fill((0, 128, 0))
-				else: self.highlight.fill((128, 0, 0))
+					self.put = True
+				else: self.put = False
 
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
+
+			# Adding assets to the grid
+			if self.put:
+				if e.button == 1:
+					if self.screen.asset != None and self.put:
+						self.tile["tiles"].append({
+							"xy":self.toGridSize(self.mxy),
+							"image": scLoadImage(self.screen.asset.imagePath, (self.tile["size"], self.tile["size"]))
+						})
+
 			# Check selected and not hover on action bar
 			if self.selected and not self.actionBar["hover"]:
 				scale = self.tile["scale"]
@@ -155,9 +169,17 @@ class Map(Panel):
 
 	# Rendering data
 	def render(self, panel):
+		if self.put: self.highlight.fill((0, 128, 0))
+		else: self.highlight.fill((128, 0, 0))
+
+		# Render tiles
+		if len(self.tile["tiles"]) != 0:
+			for tile in self.tile["tiles"]:
+				panel.blit(tile["image"], tile["xy"])
+
 		# Render highlight surface
 		if self.hover and not self.actionBar["hover"]:
-			panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize((self.mxy[0], self.mxy[1])))
+			panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize(self.mxy))
 
 		# Draw grid
 		self.drawGrid(panel)

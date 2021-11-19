@@ -11,8 +11,9 @@ from template import Template
 # Class Panel
 class Panel(Template):
 	# Constructor
-	def __init__(self, name, xy, wh, color):
+	def __init__(self, screen, name, xy, wh, color):
 		super().__init__()
+		self.screen = screen
 
 		# Custom variables
 		self.name = name
@@ -147,6 +148,8 @@ class Panel(Template):
 					elif mouseCollision((self.xy[0] + self.wh[0] - 60, self.xy[1] + 4), self.actionBar["iconSize"], e.pos):
 						if self.lock: self.lock = False
 						else: self.lock = True
+						self.move = False
+						self.resize = False
 
 		# MOUSEBUTTONUP
 		if e.type == pygame.MOUSEBUTTONUP:

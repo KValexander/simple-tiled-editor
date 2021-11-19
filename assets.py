@@ -9,8 +9,8 @@ from panel import Panel
 # Class Assets
 class Assets(Panel):
 	# Constructor
-	def __init__(self, name, xy, wh, color):
-		super().__init__(name, xy, wh, color)
+	def __init__(self, screen, name, xy, wh, color):
+		super().__init__(screen, name, xy, wh, color)
 
 	# Handling events
 	def events(self, e):
@@ -27,6 +27,11 @@ class Assets(Panel):
 					# Clear
 					elif element.name == "clear":
 						self.removeElement("type", "icon")
+						self.screen.asset = None
+				# Clicking on the icon
+				elif element.type == "icon" and element.hover:
+					self.screen.asset = element
+					self.screen.asset.rect = pygame.Rect(self.screen.asset.xy, self.screen.asset.wh)
 
 	# Load assets
 	def loadAssets(self):
@@ -63,3 +68,8 @@ class Assets(Panel):
 					xy[0] = 10
 					xy[1] += size
 				if xy[1] + size > self.wh[1]: return
+
+	# Rendering data
+	def render(self, panel):
+		if self.screen.asset != None:
+			pygame.draw.rect(panel, (0, 255, 0), self.screen.asset.rect, 3)
