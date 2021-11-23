@@ -64,6 +64,48 @@ class Map(Panel):
 	def setTileSize(self, scale):
 		self.tile["scale"] = scale
 		self.tile["size"] = self.tile["originalSize"] * self.tile["scale"]
+		self.setTilesImage()
+
+	# Add tile
+	def addTile(self):
+		# Checking a tile
+		check = [x for x in self.tile["tiles"] if x["xy"] == self.toGridSize(self.mxy)]
+		if len(check) != 0:
+			if check[0]["path"] != self.screen.asset.imagePath:
+				print(check[0]["path"], self.screen.asset.imagePath)
+			return
+
+		# Adding a tile
+		tile = {}
+		tile["xy"] = self.toGridSize(self.mxy)
+		tile["path"] = self.screen.asset.imagePath
+		tile["image"] = scLoadImage(tile["path"], (self.tile["size"], self.tile["size"]))
+		self.tile["tiles"].append(tile)
+
+	# Set tiles image
+	def setTilesImage(self):
+		for tile in self.tile["tiles"]:
+			tile["image"] = scLoadImage(tile["path"], (self.tile["size"], self.tile["size"]))
+
+	# Set tiles coords
+	def setTilesXY(self):
+		for i, tile in enumerate(self.tile["tiles"], 0):
+			# UP
+			if self.camera["direction"] == 1:
+				move = (tile["xy"][0], tile["xy"][1] + self.camera["indent"])
+			# RIGHT
+			elif self.camera["direction"] == 2:
+				move = (tile["xy"][0] + self.camera["indent"], tile["xy"][1])
+			# DOWN
+			elif self.camera["direction"] == 3:
+				move = (tile["xy"][0], tile["xy"][1] - self.camera["indent"])
+			# LEFT
+			elif self.camera["direction"] == 4:
+				move = (tile["xy"][0] - self.camera["indent"], tile["xy"][1])
+			# ELSE
+			else: move = tile["xy"]
+
+			self.tile["tiles"][i]["xy"] = move
 
 	# Set grid
 	def setGrid(self):
@@ -107,7 +149,6 @@ class Map(Panel):
 		# ELSE
 		else: move = self.camera["wh"]
 
-		self.camera["direction"] = 0
 		self.camera["wh"] = move
 
 	# Handling events
@@ -121,17 +162,18 @@ class Map(Panel):
 					self.put = True
 				else: self.put = False
 
+				# Adding tiles on hold
+				if self.click and self.screen.asset != None and self.put:
+					self.addTile()
+
+
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
 
 			# Adding assets to the grid
-			if self.put:
+			if self.put and self.screen.asset != None:
 				if e.button == 1:
-					if self.screen.asset != None and self.put:
-						self.tile["tiles"].append({
-							"xy":self.toGridSize(self.mxy),
-							"image": scLoadImage(self.screen.asset.imagePath, (self.tile["size"], self.tile["size"]))
-						})
+					self.addTile()
 
 			# Check selected and not hover on action bar
 			if self.selected and not self.actionBar["hover"]:
@@ -159,11 +201,14 @@ class Map(Panel):
 				if scale <= 0: scale = 1
 
 				# Resizing the grid
-				if self.keys["ctrl"] and not self.keys["alt"]: self.setTileSize(scale)
+				if self.keys["ctrl"] and not self.keys["alt"]:
+					self.setTileSize(scale)
 				# Moving the camera
 				else: self.cameraMove()
 
 				# Common Methods
+				self.setTilesXY()
+				self.camera["direction"] = 0
 				self.setCameraIndent()
 				self.setGrid()
 
