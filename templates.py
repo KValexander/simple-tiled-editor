@@ -19,8 +19,9 @@ from element import Element
 # Class Icon
 class Icon(Element):
 	# Constructor
-	def __init__(self, name, xy, src, wh=None):
+	def __init__(self, name, xy, src, wh=None, n=None):
 		super().__init__("icon", name, xy)
+		self.n = n
 
 		# Custom variables
 		self.src = src

@@ -3,6 +3,10 @@ import pygame
 import os
 import re
 
+# Import files
+from config import *
+from common import *
+
 # Import classes
 from panel import Panel
 
@@ -14,12 +18,14 @@ class Assets(Panel):
 
 	# Handling events
 	def events(self, e):
-		# Button click handling
+		# Click handling
 		if e.type == pygame.MOUSEBUTTONDOWN:
+			# Handling element clicks
 			for element in self.elements:
 				if element.type == "button" and element.click:
 					# Load assets
 					if element.name == "load":
+						self.screen.asset = None
 						self.loadAssets()
 					# Reset
 					elif element.name == "reset":
@@ -59,10 +65,10 @@ class Assets(Panel):
 		currentRow = 1
 
 		# Image processing
-		for image in images:
+		for i, image in enumerate(images, 0):
 			if re.search(r"\.png|jpg|jpeg", image):
 				name = re.sub(r"\.png|jpg|jpeg", "", image)
-				self.addIcon(name, xy.copy(), pathToAssets+image, (size, size))
+				self.addIcon(name, xy.copy(), pathToAssets+image, (size, size), i)
 				xy[0] += size
 				if xy[0] + size > self.wh[0]:
 					xy[0] = 10
@@ -71,5 +77,6 @@ class Assets(Panel):
 
 	# Rendering data
 	def render(self, panel):
+		# Rendering the selected asset
 		if self.screen.asset != None:
 			pygame.draw.rect(panel, (0, 255, 0), self.screen.asset.rect, 3)

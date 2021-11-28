@@ -70,6 +70,9 @@ class Panel(Template):
 		# Mouse coordinates while clicking
 		self.clickPos = (0, 0)
 
+		# Pressed mouse button
+		self.button = 0
+
 	# Panel events
 	def panelEvents(self, e):
 		# If the panel is selected
@@ -117,6 +120,7 @@ class Panel(Template):
 				# Click on the panel
 				if mouseCollision(self.xy, self.wh, e.pos):
 					self.click = True
+					self.button = e.button
 					# Mouse coordinates while clicking
 					if (self.clickPos[0] == 0 and self.clickPos[1] == 0):
 						self.clickPos = self.mxy
@@ -154,6 +158,7 @@ class Panel(Template):
 		# MOUSEBUTTONUP
 		if e.type == pygame.MOUSEBUTTONUP:
 			self.click = False
+			self.button = 0
 			self.resize = False
 			self.clickPos = (0,0)
 			self.actionBar["clickPos"] = (0, 0)

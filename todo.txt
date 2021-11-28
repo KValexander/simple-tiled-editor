@@ -1,16 +1,16 @@
 - Main class (✔)
 - Action bar
 
-- Abstract class Element
-	- Class Icon (✔)
-	- Class Link (✔)
-	- Class Button (✔)
-	- Class InputBox
-	- Class Inscription (✔)
+- Class Element
+	- Class Icon(Element) (✔)
+	- Class Link(Element) (✔)
+	- Class Button(Element) (✔)
+	- Class InputBox(Element) (✔)
+	- Class Inscription(Element) (✔)
 
-- Abstract class Template (✔)
-	- Abstract class Screen (✔)
-	- Abstract class Panel (✔)
+- Class Template (✔)
+	- Class Screen(Template) (✔)
+	- Class Panel(Template) (✔)
 
 - Panel features: (✔)
 	- Action bar (✔)
@@ -19,18 +19,14 @@
 	- Hide (✔)
 	- Close(✔)
 	- Name(✔)
+	- etc... (✔)
 
 - Screen: (✔)
 	- Resizible  (✔)
-	- Class StartScreen
-	- Class ProjectScreen
-
-- Start Screen:
-	- List projects panel
-	- Start panel
+	- Class Project(Screen) (✔)
 
 - Project screen:
-	- Assets panel
-	- Map panel
-	- Operations panel
+	- Class Assets(Panel) (✔)
+	- Class Map(Panel)
+	- Class Operations(Panel)
 

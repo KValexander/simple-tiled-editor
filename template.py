@@ -32,8 +32,8 @@ class Template:
 		self.elements = [x for x in self.elements if getattr(x, prop) != val]
 
 	# Add icon
-	def addIcon(self, name, xy, src, wh=None):
-		icon = Icon(name, xy, src, wh)
+	def addIcon(self, name, xy, src, wh=None, n=None):
+		icon = Icon(name, xy, src, wh, n)
 		self.elements.append(icon)
 
 	# Add link

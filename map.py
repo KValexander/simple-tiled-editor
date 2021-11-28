@@ -18,6 +18,9 @@ class Map(Panel):
 		self.camera = {}
 		self.setCamera()
 
+		# Unique id for tiles
+		self.uid = 0
+
 		# Lock
 		self.lock = True
 
@@ -42,7 +45,7 @@ class Map(Panel):
 	def setCamera(self):
 		self.camera["wh"] = self.wh
 		self.camera["direction"] = 0
-		self.camera["coefficient"] = 2.5
+		self.camera["coefficient"] = 4
 		self.camera["acceleration"] = 10
 		self.camera["rewind"] = self.camera["coefficient"]
 
@@ -54,7 +57,7 @@ class Map(Panel):
 	def setTile(self):
 		self.tile["originalSize"] = 4
 		self.tile["scale"] = 8
-		self.tile["cellX"] = 10
+		self.tile["cellX"] = 20
 		self.tile["cellY"] = 10
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
 		self.tile["tiles"] = []
@@ -72,15 +75,31 @@ class Map(Panel):
 		check = [x for x in self.tile["tiles"] if x["xy"] == self.toGridSize(self.mxy)]
 		if len(check) != 0:
 			if check[0]["path"] != self.screen.asset.imagePath:
-				print(check[0]["path"], self.screen.asset.imagePath)
-			return
+				self.deleteTile(check[0]["uid"])
+				# print("Наложение")
+			else: return
 
 		# Adding a tile
 		tile = {}
+		tile["uid"] = self.uid
+		self.uid += 1
+		tile["n"] = self.screen.asset.n
 		tile["xy"] = self.toGridSize(self.mxy)
 		tile["path"] = self.screen.asset.imagePath
 		tile["image"] = scLoadImage(tile["path"], (self.tile["size"], self.tile["size"]))
 		self.tile["tiles"].append(tile)
+
+	# Get tile uid
+	def getTileUid(self):
+		for tile in self.tile["tiles"]:
+			if tile["xy"] == self.toGridSize(self.mxy):
+				return tile["uid"]
+
+	# Delete tile
+	def deleteTile(self, uid):
+		for i, tile in enumerate(self.tile["tiles"], 0):
+			if tile["uid"] == uid:
+				self.tile["tiles"].pop(i)
 
 	# Set tiles image
 	def setTilesImage(self):
@@ -92,16 +111,16 @@ class Map(Panel):
 		for i, tile in enumerate(self.tile["tiles"], 0):
 			# UP
 			if self.camera["direction"] == 1:
-				move = (tile["xy"][0], tile["xy"][1] + self.camera["indent"])
+				move = (tile["xy"][0], tile["xy"][1] + self.camera["indent"] / 2)
 			# RIGHT
 			elif self.camera["direction"] == 2:
-				move = (tile["xy"][0] + self.camera["indent"], tile["xy"][1])
+				move = (tile["xy"][0] + self.camera["indent"] / 2, tile["xy"][1])
 			# DOWN
 			elif self.camera["direction"] == 3:
-				move = (tile["xy"][0], tile["xy"][1] - self.camera["indent"])
+				move = (tile["xy"][0], tile["xy"][1] - self.camera["indent"] / 2)
 			# LEFT
 			elif self.camera["direction"] == 4:
-				move = (tile["xy"][0] - self.camera["indent"], tile["xy"][1])
+				move = (tile["xy"][0] - self.camera["indent"] / 2, tile["xy"][1])
 			# ELSE
 			else: move = tile["xy"]
 
@@ -163,17 +182,20 @@ class Map(Panel):
 				else: self.put = False
 
 				# Adding tiles on hold
-				if self.click and self.screen.asset != None and self.put:
+				if self.click and self.screen.asset != None and self.put and self.button == 1:
 					self.addTile()
-
+				elif self.button == 3 and self.put:
+					self.deleteTile(self.getTileUid())
 
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
 
 			# Adding assets to the grid
-			if self.put and self.screen.asset != None:
-				if e.button == 1:
+			if self.put:
+				if e.button == 1 and self.screen.asset != None:
 					self.addTile()
+				elif e.button == 3:
+					self.deleteTile(self.getTileUid())
 
 			# Check selected and not hover on action bar
 			if self.selected and not self.actionBar["hover"]:
