@@ -26,6 +26,10 @@ class Project(Screen):
 
 		# Panel Operations
 		panel = Operations(self, "Operations", (self.screen.get_size()[0] / 4, self.screen.get_size()[1] * 0.75), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] / 4), COLORS["SPANISHGRAY"])
+		panel.addInputBox("colX", (10, 30), (35, 30), 20)
+		panel.addInputBox("colY", (10, 60), (35, 30), 20)
+		panel.getElement("colX").text = "20"
+		panel.getElement("colY").text = "10"
 		self.panels.append(panel)
 
 		# Panel Assets
