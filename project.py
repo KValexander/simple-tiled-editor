@@ -27,29 +27,29 @@ class Project(Screen):
 		self.grid = {}
 
 		# Panel Operations
-		panel = Operations(self, "Operations", (self.screen.get_size()[0] / 4, 0), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] / 4), COLORS["GRAY"])
-		panel.addInscription("width", (50, 30), "Number of cells horizontally", 16, COLORS["WHITE"])
-		panel.addInscription("height", (50, 60), "Number of cells vertically", 16, COLORS["WHITE"])
-
-		panel.addInputBox("cellsX", (10, 30), (30, 24), 16)
-		panel.addInputBox("cellsY", (10, 60), (30, 24), 16)
-
+		panel = Operations(self, "Operations", (0, 0), (self.screen.get_size()[0] * 0.25, self.screen.get_size()[1] / 4), COLORS["GRAY"])
+		panel.lock = True
+		panel.addInscription("width", (10, 30), "Number of cells horizontally", 16, COLORS["WHITE"])
+		panel.addInscription("height", (10, 60), "Number of cells vertically", 16, COLORS["WHITE"])
+		panel.addInputBox("cellsX", (240, 30), (30, 24), 16)
+		panel.addInputBox("cellsY", (240, 60), (30, 24), 16)
 		panel.getElement("cellsX").text = str(self.tile["cellX"])
 		panel.getElement("cellsY").text = str(self.tile["cellY"])
-
-		panel.addButton("change", (10, 100), (100, 30), "Change", 16)
-
+		panel.addButton("change", (10, 90), (100, 30), "Change", 16)
+		panel.addButton("save", (170, 90), (100, 30), "Save", 16)
 		self.panels.append(panel)
 
 		# Panel Map
-		panel = Map(self, "Map", (self.screen.get_size()[0] / 4, self.screen.get_size()[1] / 4), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] * 0.75), COLORS["TAUPEGRAY"])
+		panel = Map(self, "Map", (0, self.screen.get_size()[1] * 0.25), (self.screen.get_size()[0], self.screen.get_size()[1] * 0.75), COLORS["TAUPEGRAY"])
+		panel.lock = True
 		self.panels.append(panel)
 
 		# Set grid properties
 		self.setGrid(panel.wh)
 
 		# Panel Assets
-		panel = Assets(self, "Assets",(0, 0), (self.screen.get_size()[0] / 4, self.screen.get_size()[1]), COLORS["GRAY"])
+		panel = Assets(self, "Assets",(self.screen.get_size()[0] * 0.25, 0), (self.screen.get_size()[0] * 0.75, self.screen.get_size()[1] * 0.25), COLORS["GRAY"])
+		panel.lock = True
 		panel.addInputBox("pathToAssets", (10, 30), (panel.wh[0] - 20, 30), 20)
 		panel.getElement("pathToAssets").text = "assets/"
 		panel.addButton("load", (10, 70), (100, 30), "Load", 16)
@@ -62,7 +62,7 @@ class Project(Screen):
 		self.tile["originalSize"] = 4
 		self.tile["uid"] = 1
 		self.tile["scale"] = 8
-		self.tile["cellX"] = 10
+		self.tile["cellX"] = 30
 		self.tile["cellY"] = 10
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
 		self.tile["tiles"] = []
@@ -97,11 +97,8 @@ class Project(Screen):
 				move = (tile["xy"][0] - indent / 2, tile["xy"][1])
 			# ELSE
 			else:
-				button = self.getPanel("Map").button
-				if(button == 4):
-					move = self.toGridSize(tile["xy"])
-				elif(button == 5): move = self.toGridSize((tile["xy"][0] + 16, tile["xy"][1] + 16))
-				else: move = tile["xy"]
+				# move = self.toGridSize(tile["xy"])
+				move = tile["xy"]
 
 			self.tile["tiles"][i]["xy"] = move
 
@@ -157,4 +154,4 @@ class Project(Screen):
 		y = (int(xy[1] / self.tile["size"]) * self.tile["size"]) + self.grid["startY"]
 		if(xy[0] < 0): x -= self.tile["size"]
 		if(xy[1] < 0): y -= self.tile["size"]
-		return (x, y)
+		return [x, y]

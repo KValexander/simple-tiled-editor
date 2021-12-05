@@ -19,9 +19,6 @@ class Map(Panel):
 		self.setCamera()
 		self.setCameraIndent()
 
-		# Lock
-		self.lock = True
-
 		# Boolean variables
 		self.put = False
 
@@ -35,12 +32,10 @@ class Map(Panel):
 		self.camera["wh"] = self.wh
 		self.camera["direction"] = 0
 		self.camera["coefficient"] = 4
-		self.camera["acceleration"] = 10
-		self.camera["rewind"] = self.camera["coefficient"]
 
 	# Set camera indent
 	def setCameraIndent(self):
-		self.camera["indent"] = self.screen.tile["size"] * self.camera["rewind"]
+		self.camera["indent"] = self.screen.tile["size"] * self.camera["coefficient"]
 
 	# Camera moving
 	def cameraMove(self):
@@ -92,10 +87,6 @@ class Map(Panel):
 			if self.selected and not self.actionBar["hover"]:
 				scale = self.screen.tile["scale"]
 
-				# Rewind acceleration
-				if self.keys["shift"]: self.camera["rewind"] = self.camera["coefficient"] * self.camera["acceleration"]
-				else: self.camera["rewind"] = self.camera["coefficient"]
-
 				# Scroll up
 				if e.button == 4:
 					if self.keys["ctrl"]: scale += 1
@@ -120,10 +111,10 @@ class Map(Panel):
 				else: self.cameraMove()
 
 				# Common Methods
+				self.setCameraIndent()
 				self.screen.setGrid(self.camera["wh"])
 				self.screen.setTilesXY(self.camera["direction"], self.camera["indent"])
 				self.camera["direction"] = 0
-				self.setCameraIndent()
 
 	# Rendering data
 	def render(self, panel):
