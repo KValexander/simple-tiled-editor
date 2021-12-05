@@ -23,7 +23,7 @@ class Template:
 	# Get element
 	def getElement(self, name):
 		if len(self.elements) != 0:
-			for i, element in enumerate(self.elements, 0):
+			for element in self.elements:
 				if element.name == name:
 					return element
 

@@ -17,9 +17,7 @@ class Map(Panel):
 		# Camera config
 		self.camera = {}
 		self.setCamera()
-
-		# Unique id for tiles
-		self.uid = 0
+		self.setCameraIndent()
 
 		# Lock
 		self.lock = True
@@ -27,17 +25,8 @@ class Map(Panel):
 		# Boolean variables
 		self.put = False
 
-		# Tile config
-		self.tile = {}
-		self.setTile()
-		self.setCameraIndent()
-
-		# Grid config
-		self.grid = {}
-		self.setGrid()
-
 		# Highlighting
-		self.highlight = pygame.Surface((self.tile["size"], self.tile["size"]))
+		self.highlight = pygame.Surface((self.screen.tile["size"], self.screen.tile["size"]))
 		self.highlight.fill(COLORS["WHITE"])
 		self.highlight.set_alpha(128)
 
@@ -51,105 +40,7 @@ class Map(Panel):
 
 	# Set camera indent
 	def setCameraIndent(self):
-		self.camera["indent"] = self.tile["size"] * self.camera["rewind"]
-
-	# Set tile
-	def setTile(self):
-		self.tile["originalSize"] = 4
-		self.tile["scale"] = 8
-		self.tile["cellX"] = 20
-		self.tile["cellY"] = 10
-		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
-		self.tile["tiles"] = []
-		self.setTileSize(self.tile["scale"])
-
-	# Set tile size
-	def setTileSize(self, scale):
-		self.tile["scale"] = scale
-		self.tile["size"] = self.tile["originalSize"] * self.tile["scale"]
-		self.setTilesImage()
-
-	# Add tile
-	def addTile(self):
-		# Checking a tile
-		check = [x for x in self.tile["tiles"] if x["xy"] == self.toGridSize(self.mxy)]
-		if len(check) != 0:
-			if check[0]["path"] != self.screen.asset.imagePath:
-				self.deleteTile(check[0]["uid"])
-				# print("Наложение")
-			else: return
-
-		# Adding a tile
-		tile = {}
-		tile["uid"] = self.uid
-		self.uid += 1
-		tile["n"] = self.screen.asset.n
-		tile["xy"] = self.toGridSize(self.mxy)
-		tile["path"] = self.screen.asset.imagePath
-		tile["image"] = scLoadImage(tile["path"], (self.tile["size"], self.tile["size"]))
-		self.tile["tiles"].append(tile)
-
-	# Get tile uid
-	def getTileUid(self):
-		for tile in self.tile["tiles"]:
-			if tile["xy"] == self.toGridSize(self.mxy):
-				return tile["uid"]
-
-	# Delete tile
-	def deleteTile(self, uid):
-		for i, tile in enumerate(self.tile["tiles"], 0):
-			if tile["uid"] == uid:
-				self.tile["tiles"].pop(i)
-
-	# Set tiles image
-	def setTilesImage(self):
-		for tile in self.tile["tiles"]:
-			tile["image"] = scLoadImage(tile["path"], (self.tile["size"], self.tile["size"]))
-
-	# Set tiles coords
-	def setTilesXY(self):
-		for i, tile in enumerate(self.tile["tiles"], 0):
-			# UP
-			if self.camera["direction"] == 1:
-				move = (tile["xy"][0], tile["xy"][1] + self.camera["indent"] / 2)
-			# RIGHT
-			elif self.camera["direction"] == 2:
-				move = (tile["xy"][0] + self.camera["indent"] / 2, tile["xy"][1])
-			# DOWN
-			elif self.camera["direction"] == 3:
-				move = (tile["xy"][0], tile["xy"][1] - self.camera["indent"] / 2)
-			# LEFT
-			elif self.camera["direction"] == 4:
-				move = (tile["xy"][0] - self.camera["indent"] / 2, tile["xy"][1])
-			# ELSE
-			else: move = tile["xy"]
-
-			self.tile["tiles"][i]["xy"] = move
-
-	# Set grid
-	def setGrid(self):
-		self.grid["width"] = self.tile["size"] * self.tile["cellX"]
-		self.grid["height"] = self.tile["size"] * self.tile["cellY"]
-		self.grid["size"] = (self.grid["width"], self.grid["height"])
-		self.setGridPos()
-
-	# Set grid position
-	def setGridPos(self):
-		self.grid["startX"] = int(self.camera["wh"][0] / 2 - self.grid["width"] / 2)
-		self.grid["startY"] = int(self.camera["wh"][1] / 2 - self.grid["height"] / 2)
-		self.grid["condX"] = int(self.grid["width"] + self.grid["startX"])
-		self.grid["condY"] = int(self.grid["height"] + self.grid["startY"])
-		self.grid["startXY"] = (self.grid["startX"], self.grid["startY"])
-		self.grid["condXY"] = self.grid["condX"], self.grid["condY"]
-
-	# Coercing a position to a grid
-	def toGridSize(self, xy):
-		xy = (xy[0] - self.grid["startX"], xy[1] - self.grid["startY"])
-		x = (int(xy[0] / self.tile["size"]) * self.tile["size"]) + self.grid["startX"]
-		y = (int(xy[1] / self.tile["size"]) * self.tile["size"]) + self.grid["startY"]
-		if(xy[0] < 0): x -= self.tile["size"]
-		if(xy[1] < 0): y -= self.tile["size"]
-		return (x, y)
+		self.camera["indent"] = self.screen.tile["size"] * self.camera["rewind"]
 
 	# Camera moving
 	def cameraMove(self):
@@ -177,15 +68,15 @@ class Map(Panel):
 			# Check hover and not hover on action bar
 			if self.hover and not self.actionBar["hover"]:
 				# Highlight color
-				if mouseCollision(self.grid["startXY"], self.grid["size"], self.mxy):
+				if mouseCollision(self.screen.grid["startXY"], self.screen.grid["size"], self.mxy):
 					self.put = True
 				else: self.put = False
 
 				# Adding tiles on hold
 				if self.click and self.screen.asset != None and self.put and self.button == 1:
-					self.addTile()
+					self.screen.addTile(self.mxy)
 				elif self.button == 3 and self.put:
-					self.deleteTile(self.getTileUid())
+					self.screen.deleteTile(self.screen.getTileUid(self.mxy))
 
 		# MOUSEBUTTONDOWN
 		if e.type == pygame.MOUSEBUTTONDOWN:
@@ -193,13 +84,13 @@ class Map(Panel):
 			# Adding assets to the grid
 			if self.put:
 				if e.button == 1 and self.screen.asset != None:
-					self.addTile()
+					self.screen.addTile(self.mxy)
 				elif e.button == 3:
-					self.deleteTile(self.getTileUid())
+					self.screen.deleteTile(self.screen.getTileUid(self.mxy))
 
 			# Check selected and not hover on action bar
 			if self.selected and not self.actionBar["hover"]:
-				scale = self.tile["scale"]
+				scale = self.screen.tile["scale"]
 
 				# Rewind acceleration
 				if self.keys["shift"]: self.camera["rewind"] = self.camera["coefficient"] * self.camera["acceleration"]
@@ -224,15 +115,15 @@ class Map(Panel):
 
 				# Resizing the grid
 				if self.keys["ctrl"] and not self.keys["alt"]:
-					self.setTileSize(scale)
+					self.screen.setTileSize(scale)
 				# Moving the camera
 				else: self.cameraMove()
 
 				# Common Methods
-				self.setTilesXY()
+				self.screen.setGrid(self.camera["wh"])
+				self.screen.setTilesXY(self.camera["direction"], self.camera["indent"])
 				self.camera["direction"] = 0
 				self.setCameraIndent()
-				self.setGrid()
 
 	# Rendering data
 	def render(self, panel):
@@ -240,20 +131,20 @@ class Map(Panel):
 		else: self.highlight.fill((128, 0, 0))
 
 		# Render tiles
-		if len(self.tile["tiles"]) != 0:
-			for tile in self.tile["tiles"]:
+		if len(self.screen.tile["tiles"]) != 0:
+			for tile in self.screen.tile["tiles"]:
 				panel.blit(tile["image"], tile["xy"])
 
 		# Render highlight surface
 		if self.hover and not self.actionBar["hover"]:
-			panel.blit(pygame.transform.scale(self.highlight, (self.tile["size"], self.tile["size"])), self.toGridSize(self.mxy))
+			panel.blit(pygame.transform.scale(self.highlight, (self.screen.tile["size"], self.screen.tile["size"])), self.screen.toGridSize(self.mxy))
 
 		# Draw grid
 		self.drawGrid(panel)
 
 	# Draw grid
 	def drawGrid(self, panel):
-		for x in range(self.grid["startX"], self.grid["condX"] + 1, self.tile["size"]):
-			pygame.draw.line(panel, COLORS["WHITE"], (x, self.grid["startY"]), (x, self.grid["condY"]), 1)
-		for y in range(self.grid["startY"], self.grid["condY"] + 1, self.tile["size"]):
-			pygame.draw.line(panel, COLORS["WHITE"], (self.grid["startX"], y), (self.grid["condX"], y), 1)
+		for x in range(self.screen.grid["startX"], self.screen.grid["condX"] + 1, self.screen.tile["size"]):
+			pygame.draw.line(panel, COLORS["WHITE"], (x, self.screen.grid["startY"]), (x, self.screen.grid["condY"]), 1)
+		for y in range(self.screen.grid["startY"], self.screen.grid["condY"] + 1, self.screen.tile["size"]):
+			pygame.draw.line(panel, COLORS["WHITE"], (self.screen.grid["startX"], y), (self.screen.grid["condX"], y), 1)

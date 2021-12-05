@@ -30,6 +30,13 @@ class Screen(Template):
 		# Selected panel number
 		self.panelSelected = 0
 
+	# Get panel
+	def getPanel(self, name):
+		if len(self.panels) != 0:
+			for panel in self.panels:
+				if panel.name == name:
+					return panel
+
 	# Handling events
 	def screenEvents(self, e):
 		# Resize window
