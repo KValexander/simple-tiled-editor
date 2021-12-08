@@ -62,7 +62,7 @@ class Project(Screen):
 		self.tile["originalSize"] = 4
 		self.tile["uid"] = 1
 		self.tile["scale"] = 8
-		self.tile["cellX"] = 30
+		self.tile["cellX"] = 10
 		self.tile["cellY"] = 10
 		self.tile["cells"] = (self.tile["cellX"], self.tile["cellY"])
 		self.tile["tiles"] = []

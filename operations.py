@@ -1,5 +1,7 @@
 # Import libraries
 import pygame
+import time
+import os
 
 # Import classes
 from panel import Panel
@@ -53,8 +55,14 @@ class Operations(Panel):
 				for j, x in enumerate(range(self.screen.grid["startX"], self.screen.grid["condX"], self.screen.tile["size"]), 0):
 					t = self.screen.getTile(self.screen.getTileUid((x,y)))
 					if t != None: result[i][j] = (t["n"])
+
+		# Composing a file name
+		if not os.path.exists("maps"):
+			os.mkdir("maps")
+		filename = "maps/map_" + str(len(os.listdir("maps"))) + "_" + str(int(round(time.time() * 1000))) + ".txt"
+
 		# Saving a file
-		file = open("map_"++".txt", "w+")
+		file = open(filename, "w+")
 		for i in range(len(result)):
 			if i != 0: file.write("\n")
 			for j in range(len(result[i])):
