@@ -128,6 +128,12 @@ class Project(Screen):
 			if tile["xy"] == self.toGridSize(mxy):
 				return tile["uid"]
 
+	# Get tile
+	def getTile(self, uid):
+		for tile in self.tile["tiles"]:
+			if tile["uid"] == uid:
+				return tile
+
 	# Delete tile
 	def deleteTile(self, uid):
 		for i, tile in enumerate(self.tile["tiles"], 0):

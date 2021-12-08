@@ -68,7 +68,7 @@ class Assets(Panel):
 		for i, image in enumerate(images, 0):
 			if re.search(r"\.png|jpg|jpeg", image):
 				name = re.sub(r"\.png|jpg|jpeg", "", image)
-				self.addIcon(name, xy.copy(), pathToAssets+image, (size, size), i)
+				self.addIcon(name, xy.copy(), pathToAssets+image, (size, size), i+1)
 				xy[0] += size
 				if xy[0] + size > self.wh[0]:
 					xy[0] = 10

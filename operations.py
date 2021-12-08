@@ -20,6 +20,10 @@ class Operations(Panel):
 					# Load assets
 					if element.name == "change":
 						self.changeCells()
+					# Save map
+					elif element.name == "save":
+						if len(self.screen.tile["tiles"]) != 0:
+							self.saveMap()
 
 	# Change cell count
 	def changeCells(self):
@@ -33,3 +37,26 @@ class Operations(Panel):
 		self.screen.tile["cellY"] = int(cellsY)
 
 		self.screen.setGrid(self.screen.getPanel("Map").wh)
+
+	# Save map
+	# Below is a rather unoptimized piece of code
+	def saveMap(self):
+		result = []
+		# List creation
+		for i in range(self.screen.tile["cellY"]):
+			result.append([])
+			for j in range(self.screen.tile["cellX"]):
+				result[i].append(0)
+		# Writing tile numbers
+		for tile in self.screen.tile["tiles"]:
+			for i, y in enumerate(range(self.screen.grid["startY"], self.screen.grid["condY"], self.screen.tile["size"]), 0):
+				for j, x in enumerate(range(self.screen.grid["startX"], self.screen.grid["condX"], self.screen.tile["size"]), 0):
+					t = self.screen.getTile(self.screen.getTileUid((x,y)))
+					if t != None: result[i][j] = (t["n"])
+		# Saving a file
+		file = open("map_"++".txt", "w+")
+		for i in range(len(result)):
+			if i != 0: file.write("\n")
+			for j in range(len(result[i])):
+				file.write(str(result[i][j]) + " ")
+		file.close()

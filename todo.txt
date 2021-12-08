@@ -1,7 +1,7 @@
 - Main class (✔)
-- Action bar
+- Action bar (-)
 
-- Class Element
+- Class Element (✔)
 	- Class Icon(Element) (✔)
 	- Class Link(Element) (✔)
 	- Class Button(Element) (✔)
@@ -25,8 +25,8 @@
 	- Resizible  (✔)
 	- Class Project(Screen) (✔)
 
-- Project screen:
+- Project screen: (✔)
 	- Class Assets(Panel) (✔)
-	- Class Map(Panel)
-	- Class Operations(Panel)
+	- Class Map(Panel) (✔)
+	- Class Operations(Panel) (✔)
 
